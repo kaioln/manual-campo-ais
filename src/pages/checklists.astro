@@ -20,6 +20,12 @@ import PageMeta from "../components/PageMeta.astro";
     </label>
     <button id="print-checklist" type="button">Imprimir</button>
   </div>
+  <div class="checklist-toolbar no-print" aria-label="Progresso e ações do checklist">
+    <p id="checklist-progress" aria-live="polite">0 de 0 itens concluídos</p>
+    <button id="checklist-next" class="tool-button" type="button">Próximo pendente</button>
+    <button id="checklist-clear" class="tool-button" type="button">Limpar marcações</button>
+  </div>
+  <p id="checklist-state" class="state-note no-print" role="status" hidden></p>
 
   {checklists.map((checklist, listIndex) => (
     <section class="checklist-sheet content-section" data-checklist={checklist.id} hidden={listIndex !== 0}>
@@ -46,23 +52,97 @@ import PageMeta from "../components/PageMeta.astro";
     </section>
   ))}
 
+  <style>
+    .checklist-toolbar { display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; margin: 1rem 0; }
+    .checklist-toolbar p { min-width: 12rem; margin: 0 auto 0 0; font-weight: 800; color: var(--cyan); }
+    .checklist-toolbar button:disabled { cursor: not-allowed; opacity: .55; }
+    .state-note { padding: .65rem .8rem; border-left: 3px solid var(--amber); background: var(--amber-soft); }
+    @media (max-width: 640px) {
+      .checklist-toolbar { align-items: stretch; }
+      .checklist-toolbar p { width: 100%; }
+      .checklist-toolbar button { flex: 1 1 11rem; }
+    }
+  </style>
   <script>
+    import { isBooleanRecord, isString, readLocalJson, writeLocalJson } from "../utilities/localState";
+
     const storageKey = "ais-checklists-v1";
-    const saved: Record<string, boolean> = JSON.parse(localStorage.getItem(storageKey) ?? "{}");
+    const selectionKey = "ais-checklist-selection-v1";
+    const savedResult = readLocalJson(storageKey, {}, isBooleanRecord);
+    const saved: Record<string, boolean> = savedResult.value;
     const boxes = [...document.querySelectorAll<HTMLInputElement>(".checklist-items input")];
+    const select = document.querySelector<HTMLSelectElement>("#checklist-select");
+    const progress = document.querySelector<HTMLElement>("#checklist-progress");
+    const nextButton = document.querySelector<HTMLButtonElement>("#checklist-next");
+    const stateNote = document.querySelector<HTMLElement>("#checklist-state");
+    const validSelections = new Set([...document.querySelectorAll<HTMLElement>(".checklist-sheet")].map((sheet) => sheet.dataset.checklist ?? ""));
+    const selectedFromQuery = new URLSearchParams(location.search).get("item");
+    const selectionResult = readLocalJson(selectionKey, "", isString);
+    const initialSelection = selectedFromQuery && validSelections.has(selectedFromQuery)
+      ? selectedFromQuery
+      : validSelections.has(selectionResult.value) ? selectionResult.value : select?.value;
+    if (select && initialSelection) select.value = initialSelection;
+    if ((savedResult.recovered || selectionResult.recovered) && stateNote) {
+      stateNote.hidden = false;
+      stateNote.textContent = "O estado local estava inválido e foi restaurado com segurança.";
+    }
+
+    const activeBoxes = () => {
+      const active = document.querySelector<HTMLElement>(".checklist-sheet:not([hidden])");
+      return active ? [...active.querySelectorAll<HTMLInputElement>(".checklist-items input")] : [];
+    };
+    const updateProgress = () => {
+      const active = activeBoxes();
+      const done = active.filter((box) => box.checked).length;
+      const percent = active.length ? Math.round((done / active.length) * 100) : 0;
+      if (progress) progress.textContent = `${done} de ${active.length} itens concluídos · ${percent}%`;
+      if (nextButton) nextButton.disabled = active.length === 0 || done === active.length;
+    };
     boxes.forEach((box) => {
       const key = box.dataset.key ?? "";
       box.checked = Boolean(saved[key]);
       box.addEventListener("change", () => {
         saved[key] = box.checked;
-        localStorage.setItem(storageKey, JSON.stringify(saved));
+        if (!writeLocalJson(storageKey, saved) && stateNote) {
+          stateNote.hidden = false;
+          stateNote.textContent = "Não foi possível salvar as marcações neste navegador.";
+        }
+        updateProgress();
       });
     });
-    const select = document.querySelector<HTMLSelectElement>("#checklist-select");
-    const show = () => document.querySelectorAll<HTMLElement>(".checklist-sheet").forEach((sheet) => {
-      sheet.hidden = sheet.dataset.checklist !== select?.value;
-    });
+    const show = () => {
+      document.querySelectorAll<HTMLElement>(".checklist-sheet").forEach((sheet) => {
+        sheet.hidden = sheet.dataset.checklist !== select?.value;
+      });
+      if (select?.value) {
+        writeLocalJson(selectionKey, select.value);
+        const params = new URLSearchParams(location.search);
+        params.set("item", select.value);
+        history.replaceState({}, "", `${location.pathname}?${params}`);
+      }
+      updateProgress();
+    };
     select?.addEventListener("change", show);
+    nextButton?.addEventListener("click", () => {
+      const pending = activeBoxes().find((box) => !box.checked);
+      pending?.scrollIntoView({ behavior: "smooth", block: "center" });
+      pending?.focus({ preventScroll: true });
+    });
+    document.querySelector("#checklist-clear")?.addEventListener("click", () => {
+      const active = activeBoxes();
+      if (!active.some((box) => box.checked)) return;
+      if (!confirm("Limpar todas as marcações deste checklist neste navegador?")) return;
+      active.forEach((box) => {
+        box.checked = false;
+        const key = box.dataset.key ?? "";
+        saved[key] = false;
+      });
+      writeLocalJson(storageKey, saved);
+      updateProgress();
+      stateNote?.removeAttribute("hidden");
+      if (stateNote) stateNote.textContent = "Marcações deste checklist removidas.";
+    });
     document.querySelector("#print-checklist")?.addEventListener("click", () => print());
+    show();
   </script>
 </BaseLayout>

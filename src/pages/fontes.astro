@@ -29,9 +29,10 @@ import { claims } from "../data/claims";
 
   <section>
     <h2>Ledger de alegações</h2>
-    <div class="table-wrap">
+    <div class="table-wrap" role="region" aria-labelledby="claims-table-caption" tabindex="0">
       <table>
-        <thead><tr><th>ID</th><th>Afirmação</th><th>Classe</th><th>Fonte</th><th>Referência</th></tr></thead>
+        <caption id="claims-table-caption" class="sr-only">Ledger de alegações técnicas e respectivas fontes</caption>
+        <thead><tr><th scope="col">ID</th><th scope="col">Afirmação</th><th scope="col">Classe</th><th scope="col">Fonte</th><th scope="col">Referência</th></tr></thead>
         <tbody>
           {claims.map((claim) => (
             <tr>
@@ -55,4 +56,3 @@ import { claims } from "../data/claims";
     </div>
   </section>
 </BaseLayout>
-

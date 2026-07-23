@@ -4,6 +4,11 @@ import { modules } from "../data/modules";
 import { glossary } from "../data/glossary";
 import { troubleCases } from "../data/troubleshooting";
 import { sources } from "../data/sources";
+import { checklists } from "../data/checklists";
+import { practicalCases } from "../data/practicalCases";
+import { trainingTrails } from "../data/training";
+import { reportTemplates } from "../data/reportTemplates";
+import { claims } from "../data/claims";
 import { withBase } from "../utilities/path";
 
 const synonyms: Record<string, string[]> = {
@@ -43,8 +48,40 @@ const searchIndex = [
     href: withBase("/fontes/"),
     type: "Fonte",
     text: `${item.organization} ${item.revision} ${item.applicability} ${item.id}`
+  })),
+  ...checklists.map((item) => ({
+    title: item.title,
+    href: `${withBase("/checklists/")}?item=${encodeURIComponent(item.id)}`,
+    type: "Checklist",
+    text: `${item.purpose} ${item.authorization} ${item.items.join(" ")}`
+  })),
+  ...practicalCases.map((item) => ({
+    title: item.title,
+    href: `${withBase("/casos/")}?item=${encodeURIComponent(item.id)}`,
+    type: "Caso prático",
+    text: `${item.situation} ${item.choices.flatMap((choice) => [choice.label, choice.assessment, choice.why, choice.risk, choice.expected, choice.next]).join(" ")}`
+  })),
+  ...trainingTrails.map((item) => ({
+    title: item.title,
+    href: `${withBase("/treinamento/")}#trilha-${item.id}`,
+    type: "Treinamento",
+    text: `${item.audience} ${item.lessons.flatMap((lesson) => [lesson.title, lesson.objective]).join(" ")}`
+  })),
+  ...reportTemplates.map((item) => ({
+    title: item.title,
+    href: `${withBase("/relatorios/")}?item=${encodeURIComponent(item.id)}`,
+    type: "Relatório",
+    text: `${item.purpose} ${item.sections.join(" ")}`
+  })),
+  ...claims.map((item) => ({
+    title: `${item.id} — ${item.subject}`,
+    href: withBase("/fontes/"),
+    type: "Alegação",
+    text: `${item.statement} ${item.classification} ${item.sourceId} ${item.page} ${item.section} ${item.applicability} ${item.note ?? ""}`
   }))
 ];
+
+const searchTypes = [...new Set(searchIndex.map((item) => item.type))].sort((a, b) => a.localeCompare(b, "pt-BR"));
 ---
 
 <BaseLayout title="Busca" description="Busca local no manual AIS." section="Consulta rápida">
@@ -53,12 +90,29 @@ const searchIndex = [
     <h1>Busca técnica</h1>
     <p class="lede">Pesquise por sintoma, modelo, conector, sentença, menu, ferramenta, português, inglês ou sigla.</p>
   </header>
-  <form id="search-form" class="filter-bar" role="search">
+  <form id="search-form" class="filter-bar search-controls" role="search">
     <label><span class="sr-only">Consulta</span><input id="search-query" type="search" placeholder="Ex.: sem heading, AIVDM, FA-1501…" autocomplete="off" /></label>
+    <label><span class="sr-only">Tipo de conteúdo</span>
+      <select id="search-type">
+        <option value="">Todos os tipos</option>
+        {searchTypes.map((type) => <option value={type}>{type}</option>)}
+      </select>
+    </label>
     <button type="submit">Pesquisar</button>
   </form>
   <p id="search-status" aria-live="polite">Digite ao menos dois caracteres.</p>
+  <div id="search-empty" class="callout callout--info">
+    <strong id="search-empty-title">Como pesquisar</strong>
+    <p id="search-empty-text">Use um sintoma, modelo, sentença, procedimento, sigla ou termo em português ou inglês.</p>
+  </div>
   <div id="search-results" class="card-grid"></div>
+  <style>
+    .search-controls { grid-template-columns: minmax(0, 1fr) minmax(10rem, auto) auto; }
+    @media (max-width: 640px) {
+      .search-controls { grid-template-columns: 1fr; }
+      .search-controls button { width: 100%; }
+    }
+  </style>
   <script is:inline id="search-index" type="application/json" set:html={JSON.stringify({ searchIndex, synonyms })}></script>
   <script>
     import { searchLocal } from "../utilities/search";
@@ -68,17 +122,38 @@ const searchIndex = [
       const status = document.querySelector<HTMLElement>("#search-status");
       const results = document.querySelector<HTMLElement>("#search-results");
       const form = document.querySelector<HTMLFormElement>("#search-form");
-      if (!dataElement || !input || !status || !results || !form) return;
+      const typeSelect = document.querySelector<HTMLSelectElement>("#search-type");
+      const empty = document.querySelector<HTMLElement>("#search-empty");
+      const emptyTitle = document.querySelector<HTMLElement>("#search-empty-title");
+      const emptyText = document.querySelector<HTMLElement>("#search-empty-text");
+      if (!dataElement || !input || !status || !results || !form || !typeSelect || !empty || !emptyTitle || !emptyText) return;
       const data = JSON.parse(dataElement.textContent ?? "{}");
       const run = () => {
         const raw = input.value.trim();
+        const selectedType = typeSelect.value;
         const params = new URLSearchParams(location.search);
         if (raw) params.set("q", raw); else params.delete("q");
+        if (selectedType) params.set("tipo", selectedType); else params.delete("tipo");
         history.replaceState({}, "", `${location.pathname}${params.size ? `?${params}` : ""}`);
         results.replaceChildren();
-        if (raw.trim().length < 2) { status.textContent = "Digite ao menos dois caracteres."; return; }
-        const matches = searchLocal(data.searchIndex, raw, data.synonyms);
-        status.textContent = `${matches.length} resultado${matches.length === 1 ? "" : "s"}`;
+        empty.hidden = true;
+        if (raw.length < 2) {
+          status.textContent = "Digite ao menos dois caracteres.";
+          empty.hidden = false;
+          emptyTitle.textContent = "Como pesquisar";
+          emptyText.textContent = "Use um sintoma, modelo, sentença, procedimento, sigla ou termo em português ou inglês.";
+          return;
+        }
+        const matches = searchLocal(data.searchIndex, raw, data.synonyms)
+          .filter((item) => !selectedType || item.type === selectedType);
+        status.textContent = `${matches.length} resultado${matches.length === 1 ? "" : "s"}${selectedType ? ` em ${selectedType}` : ""}`;
+        if (matches.length === 0) {
+          empty.hidden = false;
+          emptyTitle.textContent = "Nenhum resultado";
+          emptyText.textContent = selectedType
+            ? "Tente todos os tipos ou use um termo equivalente, uma sigla ou parte do sintoma."
+            : "Tente um termo equivalente, uma sigla ou parte do sintoma.";
+        }
         matches.forEach((item) => {
           const link = document.createElement("a"); link.className = "card"; link.href = item.href;
           const small = document.createElement("small"); small.textContent = item.type;
@@ -89,7 +164,11 @@ const searchIndex = [
       };
       form.addEventListener("submit", (event) => { event.preventDefault(); run(); });
       input.addEventListener("input", run);
-      input.value = new URLSearchParams(location.search).get("q") || "";
+      typeSelect.addEventListener("change", run);
+      const initialParams = new URLSearchParams(location.search);
+      input.value = initialParams.get("q") || "";
+      const initialType = initialParams.get("tipo") || "";
+      if ([...typeSelect.options].some((option) => option.value === initialType)) typeSelect.value = initialType;
       if (input.value) run();
     })();
   </script>

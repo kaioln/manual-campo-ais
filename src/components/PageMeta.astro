@@ -8,6 +8,12 @@ interface Props {
 }
 
 const { status, applicability, sourceIds } = Astro.props;
+const statusClass = status
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/g, "")
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, "-")
+  .replace(/(^-|-$)/g, "");
 const pageSources = sourceIds
   .map((id) => sourceById[id])
   .filter((source): source is NonNullable<typeof source> => Boolean(source));
@@ -16,7 +22,7 @@ const pageSources = sourceIds
 <section class="page-meta" aria-label="Controle do conteúdo">
   <div>
     <span class="meta-label">Status</span>
-    <strong>{status}</strong>
+    <strong class:list={["status-chip", `status-chip--${statusClass}`]}>{status}</strong>
   </div>
   <div>
     <span class="meta-label">Última revisão</span>

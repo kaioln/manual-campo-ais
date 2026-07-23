@@ -13,10 +13,11 @@ const sectionId = section.heading
   .toLowerCase()
   .replace(/[^a-z0-9]+/g, "-")
   .replace(/(^-|-$)/g, "");
+const headingId = `${sectionId}-titulo`;
 ---
 
-<section class="content-section" id={sectionId}>
-  <h2>{section.heading}</h2>
+<section class="content-section" id={sectionId} aria-labelledby={headingId}>
+  <h2 id={headingId}>{section.heading}</h2>
   {section.warning && <div class="callout callout--warning"><strong>Atenção</strong><p>{section.warning}</p></div>}
   {section.paragraphs?.map((paragraph) => <p>{paragraph}</p>)}
   {section.bullets && <ul>{section.bullets.map((item) => <li>{item}</li>)}</ul>}
@@ -33,4 +34,3 @@ const sectionId = section.heading
   )}
   {section.claimIds?.map((claimId) => <CitationCard claimId={claimId} />)}
 </section>
-

@@ -3,9 +3,13 @@
   "short_name": "Manual AIS",
   "description": "Treinamento e consulta técnica autorizada sobre AIS, com foco no Furuno FA-150.",
   "lang": "pt-BR",
+  "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "categories": ["education", "utilities"],
   "background_color": "#09151d",
   "theme_color": "#0b2535",
   "icons": [
@@ -13,7 +17,24 @@
       "src": "icons/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any"
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Diagnóstico",
+      "short_name": "Diagnóstico",
+      "url": "diagnostico/"
+    },
+    {
+      "name": "Analisador de sentenças",
+      "short_name": "Analisador",
+      "url": "ferramentas/analisador/"
+    },
+    {
+      "name": "Checklists",
+      "short_name": "Checklists",
+      "url": "checklists/"
     }
   ]
 }

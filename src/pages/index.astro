@@ -3,17 +3,44 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { modules } from "../data/modules";
 import CitationCard from "../components/CitationCard.astro";
 import { withBase } from "../utilities/path";
+
+const moduleGroups = [
+  {
+    title: "Compreender o sistema",
+    description: "Fundamentos, dados, arquitetura e limites operacionais.",
+    orders: [1, 2, 3, 14]
+  },
+  {
+    title: "Equipamento e integração",
+    description: "FA-150, barreiras entre modelos, sensores e comunicação serial.",
+    orders: [4, 5, 6, 7]
+  },
+  {
+    title: "Executar e aceitar o serviço",
+    description: "Instalação, commissioning, procedimentos de bordo e checklists.",
+    orders: [8, 9, 13, 16]
+  },
+  {
+    title: "Diagnosticar e desenvolver competência",
+    description: "Troubleshooting, instrumentos, alarmes, casos e treinamento.",
+    orders: [10, 11, 12, 15, 17]
+  }
+].map((group) => ({
+  ...group,
+  modules: modules.filter((module) => group.orders.includes(module.order))
+}));
 ---
 
 <BaseLayout title="Início" description="Manual de campo inteligente para AIS, com foco no Furuno FA-150.">
-  <section class="hero">
-    <p class="eyebrow">Plataforma técnica offline · revisão 0.1.0</p>
-    <h1>AIS sem suposições.</h1>
-    <p class="lede">Treinamento e consulta de campo para instalar, verificar, integrar e diagnosticar sistemas AIS com segurança e rastreabilidade documental.</p>
+  <section class="hero" aria-labelledby="titulo-home">
+    <p class="eyebrow">Manual de campo AIS · Furuno FA-150 · revisão 0.1.0</p>
+    <h1 id="titulo-home">Consulta técnica para intervenção autorizada</h1>
+    <p class="lede">Referência offline para verificar, integrar e diagnosticar sistemas AIS com segurança, aplicabilidade explícita e rastreabilidade documental.</p>
     <div class="hero-actions">
-      <a class="button button--light" href={withBase("/modelos/fa-150/")}>Abrir o FA-150</a>
-      <a class="button" href={withBase("/diagnostico/")}>Diagnosticar um sintoma</a>
-      <a class="button" href={withBase("/checklists/")}>Usar checklist</a>
+      <a class="button button--light" href={withBase("/diagnostico/")}>Diagnosticar</a>
+      <a class="button" href={withBase("/modelos/fa-150/")}>Consultar FA-150</a>
+      <a class="button" href={withBase("/checklists/")}>Executar checklist</a>
+      <a class="button" href={withBase("/ferramentas/analisador/")}>Analisar sentença</a>
     </div>
   </section>
 
@@ -22,54 +49,179 @@ import { withBase } from "../utilities/path";
     <p>Qualquer intervenção pressupõe permissão, coordenação com o passadiço e procedimento aplicável. Esta plataforma não contém credenciais e não ensina bypass, spoofing ou alteração indevida de identidade.</p>
   </div>
 
-  <section aria-labelledby="estado-documental">
-    <h2 id="estado-documental">Estado documental</h2>
+  <section aria-labelledby="cobertura-documental">
+    <p class="eyebrow">Cobertura e limites</p>
+    <h2 id="cobertura-documental">Estado documental desta revisão</h2>
     <div class="status-strip">
       <div><strong>2</strong><span>manuais oficiais FA-150</span></div>
       <div><strong>17</strong><span>módulos de consulta</span></div>
       <div><strong>5</strong><span>arquivos fornecidos catalogados</span></div>
     </div>
-    <p>O FA-150 é o único equipamento com cobertura oficial nesta versão. FA-100, FA-170, FA-50, FA-70, FA-40 e outros fabricantes permanecem como lacunas explícitas.</p>
+    <div class="callout callout--info">
+      <strong>Aplicabilidade confirmada</strong>
+      <p>O FA-150 é o único equipamento com cobertura oficial nesta versão. FA-100, FA-170, FA-50, FA-70, FA-40 e outros fabricantes permanecem como lacunas explícitas; nenhum dado específico é transferido automaticamente entre modelos.</p>
+    </div>
+    <p><a href={withBase("/fontes/")}>Consultar o registro de fontes, revisões, páginas e conflitos →</a></p>
   </section>
 
-  <section aria-labelledby="atalhos">
-    <h2 id="atalhos">Comece pelo objetivo</h2>
-    <div class="card-grid">
-      <a class="card" href={withBase("/ferramentas/analisador/")}>
-        <small>Ferramenta local</small><h3>Validar uma sentença</h3>
-        <p>Estrutura, campos, checksum e aplicabilidade confirmada no FA-150.</p>
-        <p class="card__footer">Abrir analisador →</p>
-      </a>
+  <section aria-labelledby="tarefas-principais">
+    <p class="eyebrow">Acesso por tarefa</p>
+    <h2 id="tarefas-principais">O que você precisa fazer agora?</h2>
+    <div class="card-grid task-grid">
       <a class="card" href={withBase("/diagnostico/")}>
-        <small>Árvore de decisão</small><h3>Escolher o próximo teste</h3>
+        <small>01 · Sintoma</small><h3>Diagnosticar</h3>
         <p>Separe alimentação, RF, sensor, interface, configuração e consumidor.</p>
-        <p class="card__footer">Ver sintomas →</p>
+        <p class="card__footer">Escolher o próximo teste →</p>
       </a>
-      <a class="card" href={withBase("/fontes/")}>
-        <small>Rastreabilidade</small><h3>Conferir uma fonte</h3>
-        <p>Revisão, página, seção, confiança, aplicabilidade e conflitos.</p>
-        <p class="card__footer">Abrir registro →</p>
+      <a class="card" href={withBase("/modelos/fa-150/")}>
+        <small>02 · Equipamento</small><h3>Consultar FA-150</h3>
+        <p>Unidades, interfaces, telas, diagnósticos e limites confirmados.</p>
+        <p class="card__footer">Abrir central técnica →</p>
+      </a>
+      <a class="card" href={withBase("/checklists/")}>
+        <small>03 · Procedimento</small><h3>Executar checklist</h3>
+        <p>Listas imprimíveis para inspeção, instalação, testes e fechamento.</p>
+        <p class="card__footer">Selecionar atividade →</p>
+      </a>
+      <a class="card" href={withBase("/ferramentas/analisador/")}>
+        <small>04 · Interface</small><h3>Analisar sentença</h3>
+        <p>Valide estrutura, campos, checksum e aplicabilidade no FA-150.</p>
+        <p class="card__footer">Abrir ferramenta local →</p>
       </a>
     </div>
   </section>
 
   <section aria-labelledby="modulos">
-    <h2 id="modulos">Mapa de conteúdo</h2>
-    <div class="card-grid">
-      {modules.map((module) => (
-        <a class="card" href={withBase(`/modulos/${module.slug}/`)}>
-          <small>{module.eyebrow} · {module.status}</small>
-          <h3>{module.title}</h3>
-          <p>{module.summary}</p>
-          <p class="card__footer">{module.level} →</p>
-        </a>
+    <p class="eyebrow">17 módulos · quatro contextos de uso</p>
+    <h2 id="modulos">Mapa editorial do manual</h2>
+    <p class="section-intro">Percorra os módulos em sequência para formação ou entre diretamente no grupo relacionado à atividade de campo.</p>
+    <div class="module-groups">
+      {moduleGroups.map((group) => (
+        <section class="module-group" aria-labelledby={`grupo-${group.orders[0]}`}>
+          <header>
+            <h3 id={`grupo-${group.orders[0]}`}>{group.title}</h3>
+            <p>{group.description}</p>
+          </header>
+          <ol>
+            {group.modules.map((module) => (
+              <li>
+                <a href={withBase(`/modulos/${module.slug}/`)}>
+                  <span class="module-number">{String(module.order).padStart(2, "0")}</span>
+                  <span>
+                    <strong>{module.title}</strong>
+                    <small>{module.level} · {module.status}</small>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </section>
       ))}
     </div>
   </section>
 
-  <section>
-    <h2>Dois princípios que evitam diagnósticos falsos</h2>
+  <section aria-labelledby="principios-rastreaveis">
+    <p class="eyebrow">Referências essenciais</p>
+    <h2 id="principios-rastreaveis">Princípios que evitam diagnósticos falsos</h2>
     <CitationCard claimId="AIS-SAFE-001" />
     <CitationCard claimId="FA150-SENS-001" />
   </section>
+
+  <style>
+    .task-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .section-intro {
+      max-width: 70ch;
+      color: var(--muted);
+    }
+    .module-groups {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .module-group {
+      min-width: 0;
+      padding: 1rem 1.1rem;
+      background: var(--surface);
+      border: 1px solid var(--line);
+    }
+    .module-group header {
+      min-height: 6rem;
+      padding-bottom: .8rem;
+      border-bottom: 2px solid var(--line);
+    }
+    .module-group h3 {
+      margin: 0 0 .35rem;
+      font-size: 1.15rem;
+    }
+    .module-group header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+    .module-group ol {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .module-group li {
+      margin: 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .module-group li:last-child {
+      border-bottom: 0;
+    }
+    .module-group a {
+      display: grid;
+      grid-template-columns: 2.2rem minmax(0, 1fr);
+      gap: .7rem;
+      align-items: start;
+      padding: .7rem .25rem;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .module-group a:hover,
+    .module-group a:focus-visible {
+      color: var(--cyan);
+      background: var(--surface-alt);
+    }
+    .module-number {
+      color: var(--cyan);
+      font-family: Consolas, monospace;
+      font-weight: 800;
+    }
+    .module-group strong,
+    .module-group small {
+      display: block;
+    }
+    .module-group small {
+      margin-top: .15rem;
+      color: var(--muted);
+      font-size: .75rem;
+    }
+    @media (max-width: 1180px) {
+      .task-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 640px) {
+      .task-grid,
+      .module-groups {
+        grid-template-columns: 1fr;
+      }
+      .module-group header {
+        min-height: 0;
+      }
+    }
+    @media print {
+      .task-grid,
+      .module-groups {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .module-group {
+        break-inside: avoid;
+      }
+    }
+  </style>
 </BaseLayout>

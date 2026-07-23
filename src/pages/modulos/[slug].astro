@@ -20,9 +20,10 @@ const { module } = Astro.props;
   </header>
   <PageMeta status={module.status} applicability={module.applicability} sourceIds={module.sourceIds} />
   {module.diagram && (
-    <figure class="diagram">
+    <figure class="diagram" tabindex="0" role="region" aria-label={`Diagrama: ${module.diagram.alt}`}>
       <img src={withBase(module.diagram.src)} alt={module.diagram.alt} />
       <figcaption>{module.diagram.caption}</figcaption>
+      <a class="diagram__open" href={withBase(module.diagram.src)} target="_blank" rel="noopener">Abrir diagrama em tamanho integral</a>
     </figure>
   )}
   {module.sections.map((section) => <SectionRenderer section={section} />)}

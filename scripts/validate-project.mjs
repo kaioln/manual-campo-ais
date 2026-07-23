@@ -137,6 +137,11 @@ if (mode === "audit") {
       if (!/<meta[^>]+name="viewport"/i.test(html)) fail(`${label}: viewport ausente.`);
       if (!/<h1[\s>]/i.test(html)) fail(`${label}: H1 ausente.`);
       if (!/class="skip-link"/.test(html)) fail(`${label}: skip link ausente.`);
+
+      const ids = [...html.matchAll(/\bid=(["'])([^"']+)\1/gi)].map((match) => match[2]);
+      const duplicateIds = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
+      duplicateIds.forEach((id) => fail(`${label}: ID duplicado "${id}".`));
+
       for (const image of html.matchAll(/<img\b[^>]*>/gi)) {
         if (!/\balt=/.test(image[0])) fail(`${label}: imagem sem alt.`);
       }
@@ -146,6 +151,15 @@ if (mode === "audit") {
       for (const attr of html.matchAll(/\b(?:href|src)="([^"]+)"/g)) {
         const value = attr[1];
         if (!value || /^(?:https?:|mailto:|tel:|data:|#)/.test(value)) continue;
+        if (
+          deploymentBase !== "/" &&
+          value.startsWith("/") &&
+          value !== deploymentBase &&
+          !value.startsWith(`${deploymentBase}/`)
+        ) {
+          fail(`${label}: caminho absoluto fora da base de publicação ${value}.`);
+          continue;
+        }
         const clean = withoutDeploymentBase(value.split("#")[0].split("?")[0]);
         if (!clean.startsWith("/")) continue;
         const disk = clean.endsWith("/")
@@ -156,11 +170,29 @@ if (mode === "audit") {
     }
 
     const sw = text(join(root, "public", "sw.js"));
-    const corePaths = [...sw.matchAll(/^\s*"([/][^"]+)",?$/gm)].map((match) => match[1]);
+    const coreBlock = sw.match(/const\s+CORE\s*=\s*\[([\s\S]*?)\]\.map\(scoped\)/);
+    if (!coreBlock) fail("Não foi possível identificar a lista CORE do service worker.");
+    const corePaths = coreBlock
+      ? [...coreBlock[1].matchAll(/"([^"]*)"/g)].map((match) => match[1])
+      : [];
     corePaths.forEach((path) => {
-      const disk = path.endsWith("/") ? join(dist, path, "index.html") : join(dist, path);
+      if (path.startsWith("/")) {
+        fail(`Service worker deve usar caminho relativo à base: ${path}.`);
+        return;
+      }
+      const normalized = path ? `/${path.replace(/^\/+/, "")}` : "/";
+      const disk = normalized.endsWith("/")
+        ? join(dist, normalized, "index.html")
+        : join(dist, normalized);
       if (!existsSync(disk)) fail(`Service worker referencia recurso ausente: ${path}.`);
     });
+
+    const manifest = JSON.parse(text(join(root, "public", "manifest.webmanifest")));
+    for (const field of ["id", "start_url", "scope"]) {
+      if (typeof manifest[field] !== "string" || manifest[field].startsWith("/")) {
+        fail(`Manifesto deve usar ${field} relativo à base de publicação.`);
+      }
+    }
     notes.push(`${htmlFiles.length} páginas HTML auditadas.`);
   }
 }

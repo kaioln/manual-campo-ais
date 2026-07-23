@@ -16,9 +16,10 @@ import PageMeta from "../components/PageMeta.astro";
     <button id="glossary-clear" type="button">Limpar</button>
   </div>
   <p id="glossary-count" aria-live="polite">{glossary.length} termos</p>
-  <div class="table-wrap">
+  <div class="table-wrap" role="region" aria-labelledby="glossary-table-caption" tabindex="0">
     <table id="glossary-table">
-      <thead><tr><th>Português</th><th>English</th><th>Sigla</th><th>Definição</th></tr></thead>
+      <caption id="glossary-table-caption" class="sr-only">Glossário português–inglês de termos AIS</caption>
+      <thead><tr><th scope="col">Português</th><th scope="col">English</th><th scope="col">Sigla</th><th scope="col">Definição</th></tr></thead>
       <tbody>
         {glossary.map((entry) => (
           <tr data-search={`${entry.pt} ${entry.en} ${entry.acronym ?? ""} ${entry.tags.join(" ")}`.toLowerCase()}>

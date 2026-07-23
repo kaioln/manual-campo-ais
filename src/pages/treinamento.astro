@@ -12,23 +12,30 @@ import { withBase } from "../utilities/path";
     <p class="lede">Percursos por nível e especialidade. Marque uma aula somente depois de conseguir explicar objetivo, risco, evidência e próximo teste.</p>
   </header>
   <PageMeta status="verificado" applicability={["Formação técnica", "Simulação sem equipamento real"]} sourceIds={["SRC-FUR-OME-M", "SRC-FUR-IME-P1", "SRC-IMO-A1106"]} />
+  <p id="training-state" class="training-state" role="status" hidden></p>
 
   <div class="card-grid training-grid">
     {trainingTrails.map((trail) => (
-      <section class="card training-card">
+      <section class="card training-card" id={`trilha-${trail.id}`}>
         <small>{trail.audience}</small>
         <h2>{trail.title}</h2>
         <ul>
           {trail.lessons.map((lesson, index) => (
             <li>
-              <label>
-                <input type="checkbox" data-progress={`${trail.id}:${index}`} />
+              <div class="training-lesson">
                 <span><a href={withBase(lesson.href)}>{lesson.title}</a><small>{lesson.objective}</small></span>
-              </label>
+                <label class="training-check">
+                  <input type="checkbox" data-progress={`${trail.id}:${index}`} />
+                  <span>Revisada</span>
+                </label>
+              </div>
             </li>
           ))}
         </ul>
-        <p class="training-progress" data-trail={trail.id} aria-live="polite">0% concluído</p>
+        <div class="training-progress">
+          <progress data-trail-bar={trail.id} max={trail.lessons.length} value="0"></progress>
+          <p data-trail={trail.id} aria-live="polite">0 de {trail.lessons.length} aulas revisadas</p>
+        </div>
       </section>
     ))}
   </div>
@@ -36,20 +43,41 @@ import { withBase } from "../utilities/path";
     .training-card h2 { max-width: none; }
     .training-card ul { list-style: none; padding: 0; }
     .training-card li { padding: .6rem 0; border-top: 1px solid var(--line); }
-    .training-card label { display: grid; grid-template-columns: auto 1fr; gap: .7rem; align-items: start; }
-    .training-card label small { display: block; margin-top: .2rem; color: var(--muted); text-transform: none; letter-spacing: 0; }
-    .training-progress { margin-top: auto !important; padding-top: .8rem; border-top: 1px solid var(--line); color: var(--cyan) !important; font-weight: 800; }
+    .training-lesson { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .8rem; align-items: start; }
+    .training-lesson small { display: block; margin-top: .2rem; color: var(--muted); text-transform: none; letter-spacing: 0; }
+    .training-check { display: flex; gap: .4rem; align-items: center; padding: .25rem; font-size: .8rem; font-weight: 700; }
+    .training-check input { width: 1.15rem; height: 1.15rem; }
+    .training-progress { margin-top: auto; padding-top: .8rem; border-top: 1px solid var(--line); }
+    .training-progress progress { width: 100%; accent-color: var(--cyan); }
+    .training-progress p { margin: .35rem 0 0; color: var(--cyan); font-weight: 800; }
+    .training-state { padding: .65rem .8rem; border-left: 3px solid var(--amber); background: var(--amber-soft); }
+    .training-card:target { outline: 3px solid var(--cyan); outline-offset: 3px; }
+    @media (max-width: 420px) {
+      .training-lesson { grid-template-columns: 1fr; }
+      .training-check { padding-left: 0; }
+    }
   </style>
   <script>
+    import { isBooleanRecord, readLocalJson, writeLocalJson } from "../utilities/localState";
+
     const key = "ais-training-v1";
-    const state: Record<string, boolean> = JSON.parse(localStorage.getItem(key) ?? "{}");
+    const stored = readLocalJson(key, {}, isBooleanRecord);
+    const state: Record<string, boolean> = stored.value;
+    const stateNotice = document.querySelector<HTMLElement>("#training-state");
+    if (stored.recovered && stateNotice) {
+      stateNotice.hidden = false;
+      stateNotice.textContent = "O progresso local estava inválido e foi restaurado com segurança.";
+    }
     const boxes = [...document.querySelectorAll<HTMLInputElement>("[data-progress]")];
     const update = () => {
       document.querySelectorAll<HTMLElement>("[data-trail]").forEach((label) => {
         const trail = label.dataset.trail ?? "";
         const trailBoxes = boxes.filter((box) => box.dataset.progress?.startsWith(`${trail}:`));
         const done = trailBoxes.filter((box) => box.checked).length;
-        label.textContent = `${Math.round((done / trailBoxes.length) * 100)}% concluído`;
+        const percent = trailBoxes.length ? Math.round((done / trailBoxes.length) * 100) : 0;
+        label.textContent = `${done} de ${trailBoxes.length} aulas revisadas · ${percent}%`;
+        const bar = document.querySelector<HTMLProgressElement>(`[data-trail-bar="${trail}"]`);
+        if (bar) bar.value = done;
       });
     };
     boxes.forEach((box) => {
@@ -57,7 +85,10 @@ import { withBase } from "../utilities/path";
       box.checked = Boolean(state[id]);
       box.addEventListener("change", () => {
         state[id] = box.checked;
-        localStorage.setItem(key, JSON.stringify(state));
+        if (!writeLocalJson(key, state) && stateNotice) {
+          stateNotice.hidden = false;
+          stateNotice.textContent = "Não foi possível salvar o progresso neste navegador.";
+        }
         update();
       });
     });

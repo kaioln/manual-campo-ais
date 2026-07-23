@@ -17,6 +17,10 @@ import { reportTemplates } from "../data/reportTemplates";
     </label>
     <button id="print-report" type="button">Imprimir</button>
   </div>
+  <div class="report-actions no-print">
+    <button id="clear-report" class="tool-button" type="button">Limpar relatório</button>
+    <p id="report-status" role="status">Conteúdo mantido somente nesta aba; não salvo.</p>
+  </div>
   <div class="callout callout--warning no-print"><strong>Dados sensíveis</strong><p>Não salve dados de navio em computador compartilhado. Esta página não persiste o conteúdo digitado.</p></div>
   {reportTemplates.map((item, index) => (
     <section class="report-sheet content-section" data-report={item.id} hidden={index !== 0}>
@@ -25,23 +29,72 @@ import { reportTemplates } from "../data/reportTemplates";
       <p>{item.purpose}</p>
       {item.sections.map((section) => (
         <div class="report-field">
-          <h3>{section}</h3>
-          <div contenteditable="true" role="textbox" aria-label={section}></div>
+          <label>
+            <span>{section}</span>
+            <textarea rows="4" aria-label={section}></textarea>
+          </label>
         </div>
       ))}
     </section>
   ))}
   <style>
     .report-field { margin: 1.2rem 0; break-inside: avoid; }
-    .report-field h3 { margin: 0 0 .35rem; font-size: .95rem; }
-    .report-field [contenteditable] { min-height: 5rem; padding: .7rem; border: 1px solid var(--line); background: var(--surface); }
-    @media print { .report-field [contenteditable] { min-height: 4rem; } }
+    .report-field label > span { display: block; margin: 0 0 .35rem; font-size: .95rem; font-weight: 750; }
+    .report-field textarea { min-height: 5rem; overflow: hidden; resize: vertical; }
+    .report-actions { display: flex; flex-wrap: wrap; gap: .8rem; align-items: center; }
+    .report-actions p { margin: 0; color: var(--muted); font-size: .85rem; }
+    @media print { .report-field textarea { min-height: 4rem; overflow: visible; resize: none; } }
   </style>
   <script>
     const select = document.querySelector<HTMLSelectElement>("#report-select");
-    const show = () => document.querySelectorAll<HTMLElement>(".report-sheet").forEach((sheet) => sheet.hidden = sheet.dataset.report !== select?.value);
+    const status = document.querySelector<HTMLElement>("#report-status");
+    const sheets = [...document.querySelectorAll<HTMLElement>(".report-sheet")];
+    const activeSheet = () => sheets.find((sheet) => !sheet.hidden);
+    const activeFields = () => [...(activeSheet()?.querySelectorAll<HTMLTextAreaElement>("textarea") ?? [])];
+    const resize = (field: HTMLTextAreaElement) => {
+      field.style.height = "auto";
+      field.style.height = `${Math.max(field.scrollHeight, 80)}px`;
+    };
+    document.querySelectorAll<HTMLTextAreaElement>(".report-field textarea").forEach((field) => {
+      field.addEventListener("input", () => resize(field));
+    });
+    const show = () => {
+      sheets.forEach((sheet) => sheet.hidden = sheet.dataset.report !== select?.value);
+      activeFields().forEach(resize);
+      if (select?.value) {
+        const params = new URLSearchParams(location.search);
+        params.set("item", select.value);
+        history.replaceState({}, "", `${location.pathname}?${params}`);
+      }
+      if (status) status.textContent = "Conteúdo mantido somente nesta aba; não salvo.";
+    };
     select?.addEventListener("change", show);
-    document.querySelector("#print-report")?.addEventListener("click", () => print());
+    document.querySelector("#clear-report")?.addEventListener("click", () => {
+      const fields = activeFields();
+      if (!fields.some((field) => field.value.trim())) return;
+      if (!confirm("Limpar todo o conteúdo digitado neste relatório?")) return;
+      fields.forEach((field) => {
+        field.value = "";
+        resize(field);
+      });
+      fields[0]?.focus();
+      if (status) status.textContent = "Conteúdo do relatório removido desta aba.";
+    });
+    document.querySelector("#print-report")?.addEventListener("click", () => {
+      const emptyFields = activeFields().filter((field) => !field.value.trim());
+      if (emptyFields.length > 0) {
+        const emptyLabel = emptyFields.length === 1 ? "seção vazia" : "seções vazias";
+        const proceed = confirm(`Há ${emptyFields.length} ${emptyLabel}. Imprimir mesmo assim?`);
+        if (!proceed) {
+          emptyFields[0]?.focus();
+          if (status) status.textContent = "Impressão cancelada para revisar seções vazias.";
+          return;
+        }
+      }
+      print();
+    });
+    const requested = new URLSearchParams(location.search).get("item");
+    if (select && requested && [...select.options].some((option) => option.value === requested)) select.value = requested;
+    show();
   </script>
 </BaseLayout>
-

@@ -27,9 +27,10 @@ import { withBase } from "../../utilities/path";
 
   <section class="content-section">
     <h2>Arquitetura e interconexão</h2>
-    <figure class="diagram">
+    <figure class="diagram" tabindex="0" role="region" aria-label="Diagrama funcional do sistema Furuno FA-150">
       <img src={withBase("/diagrams/fa150-arquitetura.svg")} alt="Diagrama funcional do FA-150 com antenas, transponder, monitor, sensores e consumidores." />
       <figcaption>Diagrama original elaborado com base no manual de instalação IME-44310-P1, PDF 4–5 e 21–22. Não representa pinagem.</figcaption>
+      <a class="diagram__open" href={withBase("/diagrams/fa150-arquitetura.svg")} target="_blank" rel="noopener">Abrir diagrama em tamanho integral</a>
     </figure>
   </section>
 

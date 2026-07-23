@@ -12,6 +12,8 @@ interface Props {
 const { title, description, section = "Manual de Campo AIS" } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const serviceWorkerPath = withBase("/sw.js");
+const isProduction = import.meta.env.PROD;
+const currentPath = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.url.pathname}/`;
 const coreLinks = [
   { href: "/", label: "Visão geral" },
   { href: "/modelos/fa-150/", label: "Furuno FA-150" },
@@ -24,15 +26,20 @@ const coreLinks = [
   { href: "/treinamento/", label: "Treinamento" },
   { href: "/fontes/", label: "Fontes e rastreabilidade" }
 ];
+const isActive = (href: string) => {
+  const target = withBase(href);
+  const normalized = target.endsWith("/") ? target : `${target}/`;
+  return currentPath === normalized;
+};
 ---
 
 <!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#0b2535" />
+    <meta name="theme-color" content="#092533" />
     <meta name="color-scheme" content="light dark" />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href={withBase("/icons/favicon.svg")} type="image/svg+xml" />
@@ -48,69 +55,197 @@ const coreLinks = [
   </head>
   <body>
     <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <div class="reading-progress" aria-hidden="true"><span></span></div>
+
     <header class="topbar">
+      <button class="nav-toggle" type="button" aria-label="Abrir navegação" aria-controls="site-navigation" aria-expanded="false">
+        <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+      </button>
       <a class="brand" href={withBase("/")} aria-label="Manual de Campo AIS — início">
         <span class="brand__mark" aria-hidden="true">AIS</span>
-        <span><strong>Manual de Campo</strong><small>treinamento e consulta técnica</small></span>
+        <span class="brand__text"><strong>Manual de Campo</strong><small>treinamento e consulta técnica</small></span>
       </a>
       <form class="search-compact" action={withBase("/buscar/")} role="search">
-        <label class="sr-only" for="q-global">Pesquisar</label>
-        <input id="q-global" name="q" type="search" placeholder="Sintoma, modelo, sentença…" />
-        <button type="submit">Buscar</button>
+        <label class="sr-only" for="q-global">Pesquisar em todo o manual</label>
+        <span class="search-compact__icon" aria-hidden="true"></span>
+        <input id="q-global" name="q" type="search" placeholder="Pesquisar sintoma, modelo ou sentença" autocomplete="off" />
+        <kbd aria-hidden="true">/</kbd>
+        <button type="submit">Pesquisar</button>
       </form>
-      <button class="theme-toggle" type="button" aria-label="Alternar tema" aria-pressed="false">
-        <span aria-hidden="true">◐</span>
+      <button class="theme-toggle" type="button" aria-label="Alternar para modo escuro" aria-pressed="false">
+        <span aria-hidden="true">◑</span><span class="theme-toggle__label">Tema</span>
       </button>
     </header>
+
     <div class="shell">
-      <aside class="sidebar" aria-label="Navegação principal">
-        <details class="mobile-nav">
-          <summary>Navegação</summary>
-          <div class="mobile-nav__content">
-            <nav>
-              <p class="nav-label">Consulta rápida</p>
-              {coreLinks.map((link) => <a href={withBase(link.href)}>{link.label}</a>)}
-              <p class="nav-label">Módulos</p>
-              {modules.map((module) => <a href={withBase(`/modulos/${module.slug}/`)}><span>{module.order}</span>{module.title}</a>)}
-            </nav>
-          </div>
-        </details>
+      <button class="nav-backdrop" type="button" aria-label="Fechar navegação" tabindex="-1"></button>
+      <aside id="site-navigation" class="sidebar" aria-label="Navegação principal">
+        <div class="sidebar__heading">
+          <span>Manual técnico</span>
+          <button class="nav-close" type="button" aria-label="Fechar navegação">×</button>
+        </div>
         <nav class="desktop-nav">
           <p class="nav-label">Consulta rápida</p>
-          {coreLinks.map((link) => <a href={withBase(link.href)}>{link.label}</a>)}
-          <p class="nav-label">Módulos</p>
-          {modules.map((module) => <a href={withBase(`/modulos/${module.slug}/`)}><span>{String(module.order).padStart(2, "0")}</span>{module.title}</a>)}
+          {coreLinks.map((link) => (
+            <a href={withBase(link.href)} aria-current={isActive(link.href) ? "page" : undefined}>
+              <span class="nav-index" aria-hidden="true">•</span><span>{link.label}</span>
+            </a>
+          ))}
+          <p class="nav-label">Conteúdo técnico</p>
+          {modules.map((module) => (
+            <a href={withBase(`/modulos/${module.slug}/`)} aria-current={isActive(`/modulos/${module.slug}/`) ? "page" : undefined}>
+              <span class="nav-index">{String(module.order).padStart(2, "0")}</span><span>{module.title}</span>
+            </a>
+          ))}
         </nav>
-      </aside>
-      <main id="conteudo" class="main">
-        <div class="breadcrumbs" aria-label="Breadcrumb">
-          <a href={withBase("/")}>Início</a><span aria-hidden="true">/</span><span>{section}</span>
+        <div class="sidebar__footer">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>Versão 0.1.0 · uso offline</span>
         </div>
-        <slot />
+      </aside>
+
+      <main id="conteudo" class="main">
+        <div class="content-frame">
+          <nav class="breadcrumbs" aria-label="Breadcrumb">
+            <a href={withBase("/")}>Início</a><span aria-hidden="true">›</span><span aria-current="page">{section}</span>
+          </nav>
+          <slot />
+        </div>
       </main>
+
+      <aside class="page-rail" aria-label="Navegação desta página">
+        <div class="rail-card">
+          <p class="rail-label">Nesta página</p>
+          <nav id="page-toc" aria-label="Índice da página"></nav>
+        </div>
+        <div class="rail-note">
+          <strong>Barreira de segurança</strong>
+          <p>Confirme modelo, revisão e autorização antes de qualquer intervenção.</p>
+        </div>
+      </aside>
     </div>
+
     <footer class="site-footer">
       <p><strong>Uso autorizado.</strong> Não substitui manual aplicável, procedimento de bordo, norma, julgamento do oficial ou autorização do fabricante.</p>
       <nav aria-label="Rodapé">
-        <a href={withBase("/acesso-tecnico/")}>Acesso técnico autorizado</a>
+        <a href={withBase("/acesso-tecnico/")}>Acesso técnico</a>
         <a href={withBase("/o-que-mudou/")}>O que mudou</a>
         <a href={withBase("/offline/")}>Uso offline</a>
       </nav>
     </footer>
-    <script is:inline define:vars={{ serviceWorkerPath }}>
+
+    <script is:inline define:vars={{ serviceWorkerPath, isProduction }}>
+      const root = document.documentElement;
       const toggle = document.querySelector(".theme-toggle");
       const syncTheme = () => {
-        const dark = document.documentElement.dataset.theme === "dark";
+        const dark = root.dataset.theme === "dark";
         toggle?.setAttribute("aria-pressed", String(dark));
+        toggle?.setAttribute("aria-label", dark ? "Alternar para modo claro" : "Alternar para modo escuro");
       };
       toggle?.addEventListener("click", () => {
-        const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-        document.documentElement.dataset.theme = next;
+        const next = root.dataset.theme === "dark" ? "light" : "dark";
+        root.dataset.theme = next;
         localStorage.setItem("ais-theme", next);
         syncTheme();
       });
       syncTheme();
-      if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+
+      const navToggle = document.querySelector(".nav-toggle");
+      const navClose = document.querySelector(".nav-close");
+      const navBackdrop = document.querySelector(".nav-backdrop");
+      const sidebar = document.querySelector(".sidebar");
+      const inertTargets = [
+        document.querySelector(".main"),
+        document.querySelector(".page-rail"),
+        document.querySelector(".site-footer"),
+        document.querySelector(".topbar .brand"),
+        document.querySelector(".search-compact"),
+        document.querySelector(".theme-toggle")
+      ].filter(Boolean);
+      let focusBeforeNav = null;
+      const setNav = (open, restoreFocus = true) => {
+        if (open) focusBeforeNav = document.activeElement;
+        document.body.classList.toggle("nav-open", open);
+        navToggle?.setAttribute("aria-expanded", String(open));
+        inertTargets.forEach((element) => { element.inert = open; });
+        if (open) {
+          sidebar?.scrollTo({ top: 0 });
+          navClose?.focus();
+        }
+        else if (restoreFocus && focusBeforeNav instanceof HTMLElement) focusBeforeNav.focus();
+      };
+      navToggle?.addEventListener("click", () => setNav(true));
+      navClose?.addEventListener("click", () => setNav(false));
+      navBackdrop?.addEventListener("click", () => setNav(false));
+      document.querySelectorAll(".sidebar a").forEach((link) => link.addEventListener("click", () => setNav(false, false)));
+      addEventListener("keydown", (event) => {
+        if (event.key === "Escape") setNav(false);
+        if (event.key === "Tab" && document.body.classList.contains("nav-open")) {
+          const focusable = [...document.querySelectorAll(".sidebar a, .sidebar button:not([disabled])")];
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last?.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first?.focus();
+          }
+        }
+        const target = event.target;
+        const typing = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target?.isContentEditable;
+        if (event.key === "/" && !typing) {
+          event.preventDefault();
+          document.querySelector("#q-global")?.focus();
+        }
+      });
+
+      const toc = document.querySelector("#page-toc");
+      const headings = [...document.querySelectorAll("#conteudo h2")].filter((heading) => !heading.closest(".card"));
+      const usedIds = new Set([...document.querySelectorAll("[id]")].map((element) => element.id));
+      const tocEntries = [];
+      headings.forEach((heading, index) => {
+        const section = heading.closest("section[id]");
+        const target = section || heading;
+        let id = target.id;
+        if (!id) {
+          id = heading.textContent
+            ?.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || `secao-${index + 1}`;
+          const baseId = id;
+          let suffix = 2;
+          while (usedIds.has(id)) id = `${baseId}-${suffix++}`;
+          usedIds.add(id);
+          target.id = id;
+        }
+        const link = document.createElement("a");
+        link.href = `#${id}`;
+        link.textContent = heading.textContent || `Seção ${index + 1}`;
+        toc?.append(link);
+        tocEntries.push({ target, id });
+      });
+      if (!headings.length) document.querySelector(".page-rail")?.classList.add("page-rail--empty");
+
+      if ("IntersectionObserver" in window && tocEntries.length) {
+        const links = [...document.querySelectorAll("#page-toc a")];
+        const observer = new IntersectionObserver((entries) => {
+          const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+          if (!visible) return;
+          links.forEach((link) => link.toggleAttribute("aria-current", link.getAttribute("href") === `#${visible.target.id}`));
+        }, { rootMargin: "-18% 0px -72% 0px" });
+        tocEntries.forEach(({ target }) => observer.observe(target));
+      }
+
+      const progress = document.querySelector(".reading-progress span");
+      const updateProgress = () => {
+        const scrollable = document.documentElement.scrollHeight - innerHeight;
+        const value = scrollable > 0 ? Math.min(1, Math.max(0, scrollY / scrollable)) : 0;
+        if (progress) progress.style.transform = `scaleX(${value})`;
+      };
+      addEventListener("scroll", updateProgress, { passive: true });
+      updateProgress();
+
+      if (isProduction && "serviceWorker" in navigator && location.protocol.startsWith("http")) {
         addEventListener("load", () => navigator.serviceWorker.register(serviceWorkerPath).catch(() => {}));
       }
     </script>

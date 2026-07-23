@@ -17,6 +17,7 @@ import { practicalCases } from "../data/practicalCases";
     </label>
     <button id="reset-case" type="button">Reiniciar caso</button>
   </div>
+  <p id="case-live" class="sr-only" aria-live="polite"></p>
   {practicalCases.map((item, caseIndex) => (
     <section class="case-sheet content-section" data-case={item.id} hidden={caseIndex !== 0}>
       <h2>{item.title}</h2>
@@ -24,9 +25,17 @@ import { practicalCases } from "../data/practicalCases";
       <h3>Qual é o próximo teste?</h3>
       <div class="case-choices">
         {item.choices.map((choice, index) => (
-          <div class="case-choice">
-            <button type="button" data-choice={`${item.id}:${index}`}>{choice.label}</button>
-            <div class="case-feedback" data-feedback={`${item.id}:${index}`} hidden>
+          <div class="case-choice" data-assessment={choice.assessment}>
+            <button
+              type="button"
+              data-choice={`${item.id}:${index}`}
+              aria-controls={`feedback-${item.id}-${index}`}
+              aria-expanded="false"
+              aria-pressed="false"
+            >
+              {choice.label}
+            </button>
+            <div id={`feedback-${item.id}-${index}`} class="case-feedback" data-feedback={`${item.id}:${index}`} hidden>
               <p><strong>Avaliação:</strong> {choice.assessment}</p>
               <p><strong>Por quê:</strong> {choice.why}</p>
               <p><strong>Risco:</strong> {choice.risk}</p>
@@ -43,22 +52,54 @@ import { practicalCases } from "../data/practicalCases";
     .case-choice { margin: .7rem 0; border: 1px solid var(--line); background: var(--surface); }
     .case-choice > button { width: 100%; padding: .85rem 1rem; border: 0; color: var(--ink); background: transparent; text-align: left; font-weight: 750; }
     .case-choice > button:hover, .case-choice > button:focus-visible { color: var(--cyan); background: var(--surface-alt); }
+    .case-choice.is-selected { border-width: 2px; border-color: var(--cyan); }
+    .case-choice.is-selected[data-assessment="inadequado"] { border-color: var(--red); }
+    .case-choice.is-selected[data-assessment="parcial"] { border-color: var(--amber); }
     .case-feedback { padding: .8rem 1rem; border-top: 1px solid var(--line); }
     .case-feedback p { margin: .35rem 0; }
   </style>
   <script>
     const select = document.querySelector<HTMLSelectElement>("#case-select");
-    const reset = () => document.querySelectorAll<HTMLElement>(".case-feedback").forEach((feedback) => feedback.hidden = true);
+    const live = document.querySelector<HTMLElement>("#case-live");
+    const choiceButtons = [...document.querySelectorAll<HTMLButtonElement>("[data-choice]")];
+    const reset = () => {
+      document.querySelectorAll<HTMLElement>(".case-feedback").forEach((feedback) => feedback.hidden = true);
+      document.querySelectorAll<HTMLElement>(".case-choice").forEach((choice) => choice.classList.remove("is-selected"));
+      choiceButtons.forEach((button) => {
+        button.setAttribute("aria-expanded", "false");
+        button.setAttribute("aria-pressed", "false");
+      });
+      if (live) live.textContent = "Caso reiniciado.";
+    };
     const show = () => {
       reset();
       document.querySelectorAll<HTMLElement>(".case-sheet").forEach((sheet) => sheet.hidden = sheet.dataset.case !== select?.value);
+      if (select?.value) {
+        const params = new URLSearchParams(location.search);
+        params.set("item", select.value);
+        history.replaceState({}, "", `${location.pathname}?${params}`);
+      }
     };
     select?.addEventListener("change", show);
     document.querySelector("#reset-case")?.addEventListener("click", reset);
-    document.querySelectorAll<HTMLButtonElement>("[data-choice]").forEach((button) => button.addEventListener("click", () => {
+    choiceButtons.forEach((button) => button.addEventListener("click", () => {
       const active = button.dataset.choice ?? "";
-      document.querySelectorAll<HTMLElement>(".case-feedback").forEach((feedback) => feedback.hidden = feedback.dataset.feedback !== active);
+      const currentSheet = button.closest<HTMLElement>(".case-sheet");
+      currentSheet?.querySelectorAll<HTMLElement>(".case-feedback").forEach((feedback) => {
+        const selected = feedback.dataset.feedback === active;
+        feedback.hidden = !selected;
+      });
+      currentSheet?.querySelectorAll<HTMLButtonElement>("[data-choice]").forEach((candidate) => {
+        const selected = candidate === button;
+        candidate.setAttribute("aria-expanded", String(selected));
+        candidate.setAttribute("aria-pressed", String(selected));
+        candidate.closest(".case-choice")?.classList.toggle("is-selected", selected);
+      });
+      const assessment = button.closest<HTMLElement>(".case-choice")?.dataset.assessment ?? "";
+      if (live) live.textContent = `Opção selecionada. Avaliação: ${assessment}.`;
     }));
+    const requested = new URLSearchParams(location.search).get("item");
+    if (select && requested && [...select.options].some((option) => option.value === requested)) select.value = requested;
+    show();
   </script>
 </BaseLayout>
-

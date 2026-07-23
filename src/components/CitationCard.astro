@@ -11,16 +11,23 @@ const claim = claimById[claimId];
 if (!claim) throw new Error(`Claim inexistente: ${claimId}`);
 const source = sourceById[claim.sourceId];
 if (!source) throw new Error(`Fonte inexistente: ${claim.sourceId}`);
+const claimLabelId = `alegacao-${claim.id.toLowerCase()}-titulo`;
+const badgeClass = claim.classification
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/g, "")
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, "-")
+  .replace(/(^-|-$)/g, "");
 ---
 
-<aside class="citation-card" data-claim-id={claim.id}>
+<article class="citation-card" data-claim-id={claim.id} aria-labelledby={claimLabelId}>
   <div class="citation-card__top">
-    <span class:list={["evidence-badge", `evidence-badge--${claim.classification.toLowerCase().replaceAll(" ", "-")}`]}>
+    <span class:list={["evidence-badge", `evidence-badge--${badgeClass}`]}>
       {claim.classification}
     </span>
     <code>{claim.id}</code>
   </div>
-  <p>{claim.statement}</p>
+  <p id={claimLabelId}>{claim.statement}</p>
   <dl class="citation-meta">
     <div><dt>Fonte</dt><dd>{source.title}</dd></div>
     <div><dt>Referência</dt><dd>{claim.page}; {claim.section}</dd></div>
@@ -28,5 +35,4 @@ if (!source) throw new Error(`Fonte inexistente: ${claim.sourceId}`);
     <div><dt>Aplicabilidade</dt><dd>{claim.applicability}</dd></div>
   </dl>
   {claim.note && <p class="citation-note">{claim.note}</p>}
-</aside>
-
+</article>

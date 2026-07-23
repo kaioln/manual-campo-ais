@@ -16,11 +16,23 @@ import PageMeta from "../components/PageMeta.astro";
     <label><span class="sr-only">Filtrar sintomas</span><input id="trouble-filter" type="search" placeholder="Ex.: sem heading, ECDIS, reinicia…" /></label>
     <button id="trouble-clear" type="button">Limpar</button>
   </div>
+  <div class="trouble-actions no-print" aria-label="Ações da lista">
+    <button id="trouble-expand" class="tool-button" type="button">Expandir resultados</button>
+    <button id="trouble-collapse" class="tool-button" type="button">Recolher todos</button>
+  </div>
   <p id="trouble-count" aria-live="polite">{troubleCases.length} sintomas</p>
+  <div id="trouble-empty" class="callout callout--info" hidden>
+    <strong>Nenhum sintoma encontrado</strong>
+    <p>Remova o filtro ou pesquise por causa, teste, resultado, confirmação ou referência.</p>
+  </div>
 
   <div id="trouble-list">
     {troubleCases.map((item) => (
-      <details id={item.id} class="trouble-card" data-search={`${item.symptom} ${item.likely.join(" ")} ${item.firstTest}`.toLowerCase()}>
+      <details
+        id={item.id}
+        class="trouble-card"
+        data-search={`${item.symptom} ${item.likely.join(" ")} ${item.firstTest} ${item.abnormal} ${item.next} ${item.confirmation} ${item.sourceIds.join(" ")}`.toLowerCase()}
+      >
         <summary>{item.symptom}</summary>
         <div class="trouble-card__body">
           <dl>
@@ -44,12 +56,15 @@ import PageMeta from "../components/PageMeta.astro";
     .trouble-card dl div { display: grid; grid-template-columns: 12rem 1fr; gap: 1rem; padding: .65rem 0; border-bottom: 1px solid var(--line); }
     .trouble-card dt { color: var(--muted); font-weight: 700; }
     .trouble-card dd { margin: 0; }
+    .trouble-actions { display: flex; flex-wrap: wrap; gap: .65rem; }
+    .trouble-card:target { outline: 3px solid var(--cyan); outline-offset: 3px; }
     @media (max-width: 640px) { .trouble-card dl div { grid-template-columns: 1fr; gap: .2rem; } }
   </style>
   <script>
     const input = document.querySelector<HTMLInputElement>("#trouble-filter");
     const cards = [...document.querySelectorAll<HTMLElement>(".trouble-card")];
-    const count = document.querySelector("#trouble-count");
+    const count = document.querySelector<HTMLElement>("#trouble-count");
+    const empty = document.querySelector<HTMLElement>("#trouble-empty");
     const normalize = (value: string) => value.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
     const apply = () => {
       const query = normalize(input?.value ?? "");
@@ -60,8 +75,34 @@ import PageMeta from "../components/PageMeta.astro";
         if (match) visible += 1;
       });
       if (count) count.textContent = `${visible} sintoma${visible === 1 ? "" : "s"}`;
+      if (empty) empty.hidden = visible !== 0;
+    };
+    const openHashTarget = () => {
+      const id = decodeURIComponent(location.hash.slice(1));
+      if (!id) return;
+      const target = document.getElementById(id);
+      if (!(target instanceof HTMLDetailsElement)) return;
+      target.hidden = false;
+      target.open = true;
+      requestAnimationFrame(() => {
+        target.scrollIntoView({ block: "start" });
+        target.querySelector<HTMLElement>("summary")?.focus({ preventScroll: true });
+      });
     };
     input?.addEventListener("input", apply);
     document.querySelector("#trouble-clear")?.addEventListener("click", () => { if (input) input.value = ""; apply(); input?.focus(); });
+    document.querySelector("#trouble-expand")?.addEventListener("click", () => {
+      cards.filter((card) => !card.hidden).forEach((card) => {
+        if (card instanceof HTMLDetailsElement) card.open = true;
+      });
+    });
+    document.querySelector("#trouble-collapse")?.addEventListener("click", () => {
+      cards.forEach((card) => {
+        if (card instanceof HTMLDetailsElement) card.open = false;
+      });
+      input?.focus();
+    });
+    addEventListener("hashchange", openHashTarget);
+    openHashTarget();
   </script>
 </BaseLayout>

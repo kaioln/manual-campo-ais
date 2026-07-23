@@ -27,14 +27,15 @@ import PageMeta from "../../components/PageMeta.astro";
     </div>
   </section>
 
-  <section id="analysis-result" class="content-section" aria-live="polite" hidden>
-    <h2>Resultado</h2>
-    <div id="summary"></div>
+  <section id="analysis-result" class="content-section" aria-labelledby="analysis-heading" hidden>
+    <h2 id="analysis-heading">Resultado</h2>
+    <div id="summary" role="status" aria-live="polite" aria-atomic="true" tabindex="-1"></div>
     <dl class="citation-meta" id="sentence-meta"></dl>
     <div id="messages"></div>
-    <div class="table-wrap">
+    <div class="table-wrap" role="region" aria-labelledby="fields-table-caption" tabindex="0">
       <table>
-        <thead><tr><th>Campo</th><th>Valor</th><th>Significado</th></tr></thead>
+        <caption id="fields-table-caption" class="sr-only">Campos identificados na sentença analisada</caption>
+        <thead><tr><th scope="col">Campo</th><th scope="col">Valor</th><th scope="col">Significado</th></tr></thead>
         <tbody id="fields"></tbody>
       </table>
     </div>
@@ -64,7 +65,12 @@ import PageMeta from "../../components/PageMeta.astro";
       if (!input || !result || !summary || !meta || !messages || !fields) return;
       const parsed = parseSentence(input.value);
       result.hidden = false;
-      summary.className = `callout ${parsed.checksumValid ? "callout--info" : "callout--danger"}`;
+      const hasErrors = parsed.structuralErrors.length > 0 || parsed.checksumValid === false;
+      const severity = hasErrors ? "erro" : parsed.checksumValid ? "sucesso" : "aviso";
+      summary.className = `callout ${hasErrors ? "callout--danger" : parsed.checksumValid ? "callout--info" : "callout--warning"}`;
+      summary.dataset.severity = severity;
+      summary.setAttribute("role", hasErrors ? "alert" : "status");
+      summary.setAttribute("aria-live", hasErrors ? "assertive" : "polite");
       summary.replaceChildren();
       const strong = document.createElement("strong");
       strong.textContent = parsed.checksumValid ? "Checksum válido" : parsed.checksumValid === false ? "Checksum inválido" : "Checksum não verificável";
@@ -98,6 +104,7 @@ import PageMeta from "../../components/PageMeta.astro";
         });
         return row;
       }));
+      summary.focus();
     };
 
     document.querySelector("#analyze")?.addEventListener("click", render);
