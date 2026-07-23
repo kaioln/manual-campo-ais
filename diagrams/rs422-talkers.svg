@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="430" viewBox="0 0 1000 430" role="img" aria-labelledby="title desc">
+  <title id="title">Talker e listeners em interface diferencial</title>
+  <desc id="desc">Um talker envia por um par diferencial a vários listeners, mantendo polaridade, isolamento e blindagem conforme os manuais.</desc>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10z" fill="#28778d"/></marker></defs>
+  <rect width="1000" height="430" fill="#eef4f6"/>
+  <g font-family="system-ui,sans-serif" fill="#17262f">
+    <rect x="55" y="145" width="220" height="130" fill="#d9eef3" stroke="#0b2535" stroke-width="4"/>
+    <text x="165" y="195" text-anchor="middle" font-size="26" font-weight="700">Talker</text><text x="165" y="230" text-anchor="middle" font-size="18">origem de dados</text>
+    <g fill="#f8fbfc" stroke="#173f52" stroke-width="3">
+      <rect x="720" y="35" width="220" height="90"/><rect x="720" y="170" width="220" height="90"/><rect x="720" y="305" width="220" height="90"/>
+    </g>
+    <g font-size="22" font-weight="700"><text x="830" y="88" text-anchor="middle">Listener 1</text><text x="830" y="223" text-anchor="middle">Listener 2</text><text x="830" y="358" text-anchor="middle">Listener 3</text></g>
+    <g fill="none" stroke="#28778d" stroke-width="4" marker-end="url(#a)"><path d="M275 190H570Q630 190 630 80H720"/><path d="M275 210H720"/><path d="M275 230H570Q630 230 630 350H720"/></g>
+    <text x="480" y="175" text-anchor="middle" font-size="18">par diferencial</text><text x="480" y="265" text-anchor="middle" font-size="18">dados em um sentido</text>
+  </g>
+</svg>
+
