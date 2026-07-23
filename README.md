@@ -32,7 +32,7 @@ Abrir os arquivos diretamente com `file://` não é recomendado porque service w
 
 ## Publicação no GitHub Pages
 
-O workflow `.github/workflows/deploy-pages.yml` valida e publica automaticamente a branch `main` em:
+O código-fonte fica na branch `main` e o build estático validado é publicado na branch `gh-pages` em:
 
 `https://kaioln.github.io/manual-campo-ais/`
 
