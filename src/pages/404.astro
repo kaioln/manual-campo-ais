@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { withBase } from "../utilities/path";
 ---
 <BaseLayout title="Página não encontrada" description="A página solicitada não existe." section="Erro">
   <header class="page-header">
@@ -7,6 +8,5 @@ import BaseLayout from "../layouts/BaseLayout.astro";
     <h1>Página não encontrada</h1>
     <p class="lede">O endereço pode ter mudado. Use a busca ou volte ao mapa de conteúdo.</p>
   </header>
-  <p><a class="button" href="/buscar/">Abrir busca</a></p>
+  <p><a class="button" href={withBase("/buscar/")}>Abrir busca</a></p>
 </BaseLayout>
-

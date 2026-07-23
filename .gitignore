@@ -6,7 +6,9 @@ coverage/
 work/
 outputs/
 private/
+docs/manuals/
+docs/procedures/
+docs/service-reports/
 *.log
 .DS_Store
 Thumbs.db
-

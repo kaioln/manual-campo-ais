@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { modules } from "../data/modules";
 import CitationCard from "../components/CitationCard.astro";
+import { withBase } from "../utilities/path";
 ---
 
 <BaseLayout title="Início" description="Manual de campo inteligente para AIS, com foco no Furuno FA-150.">
@@ -10,9 +11,9 @@ import CitationCard from "../components/CitationCard.astro";
     <h1>AIS sem suposições.</h1>
     <p class="lede">Treinamento e consulta de campo para instalar, verificar, integrar e diagnosticar sistemas AIS com segurança e rastreabilidade documental.</p>
     <div class="hero-actions">
-      <a class="button button--light" href="/modelos/fa-150/">Abrir o FA-150</a>
-      <a class="button" href="/diagnostico/">Diagnosticar um sintoma</a>
-      <a class="button" href="/checklists/">Usar checklist</a>
+      <a class="button button--light" href={withBase("/modelos/fa-150/")}>Abrir o FA-150</a>
+      <a class="button" href={withBase("/diagnostico/")}>Diagnosticar um sintoma</a>
+      <a class="button" href={withBase("/checklists/")}>Usar checklist</a>
     </div>
   </section>
 
@@ -34,17 +35,17 @@ import CitationCard from "../components/CitationCard.astro";
   <section aria-labelledby="atalhos">
     <h2 id="atalhos">Comece pelo objetivo</h2>
     <div class="card-grid">
-      <a class="card" href="/ferramentas/analisador/">
+      <a class="card" href={withBase("/ferramentas/analisador/")}>
         <small>Ferramenta local</small><h3>Validar uma sentença</h3>
         <p>Estrutura, campos, checksum e aplicabilidade confirmada no FA-150.</p>
         <p class="card__footer">Abrir analisador →</p>
       </a>
-      <a class="card" href="/diagnostico/">
+      <a class="card" href={withBase("/diagnostico/")}>
         <small>Árvore de decisão</small><h3>Escolher o próximo teste</h3>
         <p>Separe alimentação, RF, sensor, interface, configuração e consumidor.</p>
         <p class="card__footer">Ver sintomas →</p>
       </a>
-      <a class="card" href="/fontes/">
+      <a class="card" href={withBase("/fontes/")}>
         <small>Rastreabilidade</small><h3>Conferir uma fonte</h3>
         <p>Revisão, página, seção, confiança, aplicabilidade e conflitos.</p>
         <p class="card__footer">Abrir registro →</p>
@@ -56,7 +57,7 @@ import CitationCard from "../components/CitationCard.astro";
     <h2 id="modulos">Mapa de conteúdo</h2>
     <div class="card-grid">
       {modules.map((module) => (
-        <a class="card" href={`/modulos/${module.slug}/`}>
+        <a class="card" href={withBase(`/modulos/${module.slug}/`)}>
           <small>{module.eyebrow} · {module.status}</small>
           <h3>{module.title}</h3>
           <p>{module.summary}</p>
@@ -72,4 +73,3 @@ import CitationCard from "../components/CitationCard.astro";
     <CitationCard claimId="FA150-SENS-001" />
   </section>
 </BaseLayout>
-

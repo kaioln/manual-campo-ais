@@ -30,6 +30,14 @@ npm run preview
 
 Abrir os arquivos diretamente com `file://` não é recomendado porque service workers e algumas rotas exigem HTTP local.
 
+## Publicação no GitHub Pages
+
+O workflow `.github/workflows/deploy-pages.yml` valida e publica automaticamente a branch `main` em:
+
+`https://kaioln.github.io/manual-campo-ais/`
+
+Os documentos-fonte recebidos em `docs/manuals/`, `docs/procedures/` e `docs/service-reports/` permanecem somente no ambiente autorizado e não entram no repositório público. O catálogo, os hashes, as referências e o conteúdo técnico reescrito permanecem versionados.
+
 ## Adicionar um manual
 
 1. Coloque o original na pasta adequada dentro de `docs/`.
@@ -59,4 +67,3 @@ Não copie documentos para `public/`. O site publica apenas sínteses, dados san
 ## Offline
 
 O service worker armazena as páginas principais e recursos visitados. Após o primeiro carregamento por HTTP, a plataforma continua útil sem conexão. Checklists, tema e progresso ficam somente no navegador.
-

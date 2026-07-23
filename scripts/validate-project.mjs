@@ -7,6 +7,13 @@ const mode = process.argv.includes("--mode")
   : "audit";
 const failures = [];
 const notes = [];
+const deploymentBase = `/${(process.env.PUBLIC_BASE_PATH || "").replace(/^\/+|\/+$/g, "")}`;
+
+function withoutDeploymentBase(path) {
+  if (deploymentBase === "/") return path;
+  if (path === deploymentBase || path === `${deploymentBase}/`) return "/";
+  return path.startsWith(`${deploymentBase}/`) ? path.slice(deploymentBase.length) : path;
+}
 
 function walk(dir) {
   if (!existsSync(dir)) return [];
@@ -139,7 +146,7 @@ if (mode === "audit") {
       for (const attr of html.matchAll(/\b(?:href|src)="([^"]+)"/g)) {
         const value = attr[1];
         if (!value || /^(?:https?:|mailto:|tel:|data:|#)/.test(value)) continue;
-        const clean = value.split("#")[0].split("?")[0];
+        const clean = withoutDeploymentBase(value.split("#")[0].split("?")[0]);
         if (!clean.startsWith("/")) continue;
         const disk = clean.endsWith("/")
           ? join(dist, clean, "index.html")

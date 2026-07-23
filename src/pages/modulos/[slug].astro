@@ -3,6 +3,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageMeta from "../../components/PageMeta.astro";
 import SectionRenderer from "../../components/SectionRenderer.astro";
 import { modules } from "../../data/modules";
+import { withBase } from "../../utilities/path";
 
 export function getStaticPaths() {
   return modules.map((module) => ({ params: { slug: module.slug }, props: { module } }));
@@ -20,7 +21,7 @@ const { module } = Astro.props;
   <PageMeta status={module.status} applicability={module.applicability} sourceIds={module.sourceIds} />
   {module.diagram && (
     <figure class="diagram">
-      <img src={module.diagram.src} alt={module.diagram.alt} />
+      <img src={withBase(module.diagram.src)} alt={module.diagram.alt} />
       <figcaption>{module.diagram.caption}</figcaption>
     </figure>
   )}

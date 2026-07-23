@@ -1,21 +1,22 @@
 const CACHE = "manual-ais-v0.1.0";
+const scoped = (path) => new URL(path, self.registration.scope).href;
 const CORE = [
-  "/",
-  "/modelos/fa-150/",
-  "/diagnostico/",
-  "/ferramentas/analisador/",
-  "/checklists/",
-  "/casos/",
-  "/relatorios/",
-  "/glossario/",
-  "/treinamento/",
-  "/fontes/",
-  "/buscar/",
-  "/offline/",
-  "/manifest.webmanifest",
-  "/icons/favicon.svg",
-  "/diagrams/fa150-arquitetura.svg"
-];
+  "",
+  "modelos/fa-150/",
+  "diagnostico/",
+  "ferramentas/analisador/",
+  "checklists/",
+  "casos/",
+  "relatorios/",
+  "glossario/",
+  "treinamento/",
+  "fontes/",
+  "buscar/",
+  "offline/",
+  "manifest.webmanifest",
+  "icons/favicon.svg",
+  "diagrams/fa150-arquitetura.svg"
+].map(scoped);
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(CORE)));
@@ -41,7 +42,7 @@ self.addEventListener("fetch", (event) => {
         }
         return response;
       });
-      return cached || network.catch(() => caches.match("/offline/"));
+      return cached || network.catch(() => caches.match(scoped("offline/")));
     })
   );
 });

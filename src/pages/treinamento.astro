@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { trainingTrails } from "../data/training";
 import PageMeta from "../components/PageMeta.astro";
+import { withBase } from "../utilities/path";
 ---
 
 <BaseLayout title="Treinamento" description="Trilhas locais de treinamento AIS." section="Treinamento">
@@ -22,7 +23,7 @@ import PageMeta from "../components/PageMeta.astro";
             <li>
               <label>
                 <input type="checkbox" data-progress={`${trail.id}:${index}`} />
-                <span><a href={lesson.href}>{lesson.title}</a><small>{lesson.objective}</small></span>
+                <span><a href={withBase(lesson.href)}>{lesson.title}</a><small>{lesson.objective}</small></span>
               </label>
             </li>
           ))}

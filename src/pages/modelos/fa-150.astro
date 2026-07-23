@@ -2,6 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageMeta from "../../components/PageMeta.astro";
 import CitationCard from "../../components/CitationCard.astro";
+import { withBase } from "../../utilities/path";
 ---
 
 <BaseLayout title="Furuno FA-150" description="Central técnica rastreável do Furuno FA-150." section="Modelos">
@@ -27,7 +28,7 @@ import CitationCard from "../../components/CitationCard.astro";
   <section class="content-section">
     <h2>Arquitetura e interconexão</h2>
     <figure class="diagram">
-      <img src="/diagrams/fa150-arquitetura.svg" alt="Diagrama funcional do FA-150 com antenas, transponder, monitor, sensores e consumidores." />
+      <img src={withBase("/diagrams/fa150-arquitetura.svg")} alt="Diagrama funcional do FA-150 com antenas, transponder, monitor, sensores e consumidores." />
       <figcaption>Diagrama original elaborado com base no manual de instalação IME-44310-P1, PDF 4–5 e 21–22. Não representa pinagem.</figcaption>
     </figure>
   </section>
@@ -53,4 +54,3 @@ import CitationCard from "../../components/CitationCard.astro";
     <CitationCard claimId="FA150-RESET-001" />
   </section>
 </BaseLayout>
-

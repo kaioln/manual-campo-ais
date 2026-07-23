@@ -4,6 +4,7 @@ import { modules } from "../data/modules";
 import { glossary } from "../data/glossary";
 import { troubleCases } from "../data/troubleshooting";
 import { sources } from "../data/sources";
+import { withBase } from "../utilities/path";
 
 const synonyms: Record<string, string[]> = {
   rumo: ["heading", "hdg", "hdt"],
@@ -21,25 +22,25 @@ const synonyms: Record<string, string[]> = {
 const searchIndex = [
   ...modules.map((item) => ({
     title: item.title,
-    href: `/modulos/${item.slug}/`,
+    href: withBase(`/modulos/${item.slug}/`),
     type: "Módulo",
     text: `${item.summary} ${item.keywords.join(" ")} ${item.sections.flatMap((section) => [...(section.paragraphs ?? []), ...(section.bullets ?? []), ...(section.steps ?? [])]).join(" ")}`
   })),
   ...glossary.map((item) => ({
     title: `${item.pt} — ${item.en}${item.acronym ? ` — ${item.acronym}` : ""}`,
-    href: "/glossario/",
+    href: withBase("/glossario/"),
     type: "Glossário",
     text: `${item.definition} ${item.tags.join(" ")}`
   })),
   ...troubleCases.map((item) => ({
     title: item.symptom,
-    href: `/diagnostico/#${item.id}`,
+    href: withBase(`/diagnostico/#${item.id}`),
     type: "Diagnóstico",
     text: `${item.likely.join(" ")} ${item.firstTest} ${item.next}`
   })),
   ...sources.map((item) => ({
     title: item.title,
-    href: "/fontes/",
+    href: withBase("/fontes/"),
     type: "Fonte",
     text: `${item.organization} ${item.revision} ${item.applicability} ${item.id}`
   }))
