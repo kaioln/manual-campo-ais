@@ -1,0 +1,68 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { checklists } from "../data/checklists";
+import PageMeta from "../components/PageMeta.astro";
+---
+
+<BaseLayout title="Checklists" description="Checklists de serviço AIS imprimíveis e armazenados localmente." section="Consulta de campo">
+  <header class="page-header">
+    <p class="eyebrow">Uso offline · impressão limpa</p>
+    <h1>Checklists de campo</h1>
+    <p class="lede">Selecione uma atividade. As marcações ficam apenas neste navegador e não substituem medições, evidências ou autorização.</p>
+  </header>
+  <PageMeta status="verificado" applicability={["Serviço AIS autorizado", "Uso offline e impressão"]} sourceIds={["SRC-PRONAV-POP", "SRC-PRONAV-RAT", "SRC-FUR-IME-P1"]} />
+
+  <div class="filter-bar no-print">
+    <label><span class="sr-only">Escolher checklist</span>
+      <select id="checklist-select">
+        {checklists.map((checklist) => <option value={checklist.id}>{checklist.title}</option>)}
+      </select>
+    </label>
+    <button id="print-checklist" type="button">Imprimir</button>
+  </div>
+
+  {checklists.map((checklist, listIndex) => (
+    <section class="checklist-sheet content-section" data-checklist={checklist.id} hidden={listIndex !== 0}>
+      <p class="eyebrow">Checklist · {checklist.authorization}</p>
+      <h2>{checklist.title}</h2>
+      <p>{checklist.purpose}</p>
+      <div class="callout callout--warning"><strong>Autorização</strong><p>{checklist.authorization}</p></div>
+      <ol class="checklist-items">
+        {checklist.items.map((item, index) => (
+          <li>
+            <label>
+              <input type="checkbox" data-key={`${checklist.id}:${index}`} />
+              <span>{item}</span>
+            </label>
+          </li>
+        ))}
+      </ol>
+      <div class="signoff">
+        <p>Embarcação/OS: ________________________________________</p>
+        <p>Data/hora: __________________  Técnico: __________________</p>
+        <p>Responsável do passadiço: ________________________________</p>
+        <p>Pendências: ______________________________________________</p>
+      </div>
+    </section>
+  ))}
+
+  <script>
+    const storageKey = "ais-checklists-v1";
+    const saved: Record<string, boolean> = JSON.parse(localStorage.getItem(storageKey) ?? "{}");
+    const boxes = [...document.querySelectorAll<HTMLInputElement>(".checklist-items input")];
+    boxes.forEach((box) => {
+      const key = box.dataset.key ?? "";
+      box.checked = Boolean(saved[key]);
+      box.addEventListener("change", () => {
+        saved[key] = box.checked;
+        localStorage.setItem(storageKey, JSON.stringify(saved));
+      });
+    });
+    const select = document.querySelector<HTMLSelectElement>("#checklist-select");
+    const show = () => document.querySelectorAll<HTMLElement>(".checklist-sheet").forEach((sheet) => {
+      sheet.hidden = sheet.dataset.checklist !== select?.value;
+    });
+    select?.addEventListener("change", show);
+    document.querySelector("#print-checklist")?.addEventListener("click", () => print());
+  </script>
+</BaseLayout>

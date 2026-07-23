@@ -1,0 +1,27 @@
+{
+  "name": "manual-campo-ais",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "lint": "astro check && node scripts/validate-project.mjs --mode lint",
+    "test": "vitest run",
+    "audit": "node scripts/validate-project.mjs --mode audit",
+    "validate": "npm run lint && npm test && npm run build && npm run audit"
+  },
+  "dependencies": {
+    "astro": "latest"
+  },
+  "devDependencies": {
+    "@astrojs/check": "latest",
+    "typescript": "^6.0.0",
+    "vitest": "latest"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

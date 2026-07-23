@@ -1,0 +1,39 @@
+---
+import { sourceById } from "../data/sources";
+
+interface Props {
+  status: string;
+  applicability: string[];
+  sourceIds: string[];
+}
+
+const { status, applicability, sourceIds } = Astro.props;
+const pageSources = sourceIds
+  .map((id) => sourceById[id])
+  .filter((source): source is NonNullable<typeof source> => Boolean(source));
+---
+
+<section class="page-meta" aria-label="Controle do conteúdo">
+  <div>
+    <span class="meta-label">Status</span>
+    <strong>{status}</strong>
+  </div>
+  <div>
+    <span class="meta-label">Última revisão</span>
+    <strong>23 jul. 2026</strong>
+  </div>
+  <div>
+    <span class="meta-label">Aplicabilidade</span>
+    <strong>{applicability.join(" · ")}</strong>
+  </div>
+  <div>
+    <span class="meta-label">Responsável</span>
+    <strong>Revisão técnica do projeto</strong>
+  </div>
+  <div class="page-meta__sources">
+    <span class="meta-label">Documentos utilizados</span>
+    <ul>
+      {pageSources.map((source) => <li>{source.revision}</li>)}
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,75 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { modules } from "../data/modules";
+import CitationCard from "../components/CitationCard.astro";
+---
+
+<BaseLayout title="Início" description="Manual de campo inteligente para AIS, com foco no Furuno FA-150.">
+  <section class="hero">
+    <p class="eyebrow">Plataforma técnica offline · revisão 0.1.0</p>
+    <h1>AIS sem suposições.</h1>
+    <p class="lede">Treinamento e consulta de campo para instalar, verificar, integrar e diagnosticar sistemas AIS com segurança e rastreabilidade documental.</p>
+    <div class="hero-actions">
+      <a class="button button--light" href="/modelos/fa-150/">Abrir o FA-150</a>
+      <a class="button" href="/diagnostico/">Diagnosticar um sintoma</a>
+      <a class="button" href="/checklists/">Usar checklist</a>
+    </div>
+  </section>
+
+  <div class="callout callout--danger">
+    <strong>Uso autorizado</strong>
+    <p>Qualquer intervenção pressupõe permissão, coordenação com o passadiço e procedimento aplicável. Esta plataforma não contém credenciais e não ensina bypass, spoofing ou alteração indevida de identidade.</p>
+  </div>
+
+  <section aria-labelledby="estado-documental">
+    <h2 id="estado-documental">Estado documental</h2>
+    <div class="status-strip">
+      <div><strong>2</strong><span>manuais oficiais FA-150</span></div>
+      <div><strong>17</strong><span>módulos de consulta</span></div>
+      <div><strong>5</strong><span>arquivos fornecidos catalogados</span></div>
+    </div>
+    <p>O FA-150 é o único equipamento com cobertura oficial nesta versão. FA-100, FA-170, FA-50, FA-70, FA-40 e outros fabricantes permanecem como lacunas explícitas.</p>
+  </section>
+
+  <section aria-labelledby="atalhos">
+    <h2 id="atalhos">Comece pelo objetivo</h2>
+    <div class="card-grid">
+      <a class="card" href="/ferramentas/analisador/">
+        <small>Ferramenta local</small><h3>Validar uma sentença</h3>
+        <p>Estrutura, campos, checksum e aplicabilidade confirmada no FA-150.</p>
+        <p class="card__footer">Abrir analisador →</p>
+      </a>
+      <a class="card" href="/diagnostico/">
+        <small>Árvore de decisão</small><h3>Escolher o próximo teste</h3>
+        <p>Separe alimentação, RF, sensor, interface, configuração e consumidor.</p>
+        <p class="card__footer">Ver sintomas →</p>
+      </a>
+      <a class="card" href="/fontes/">
+        <small>Rastreabilidade</small><h3>Conferir uma fonte</h3>
+        <p>Revisão, página, seção, confiança, aplicabilidade e conflitos.</p>
+        <p class="card__footer">Abrir registro →</p>
+      </a>
+    </div>
+  </section>
+
+  <section aria-labelledby="modulos">
+    <h2 id="modulos">Mapa de conteúdo</h2>
+    <div class="card-grid">
+      {modules.map((module) => (
+        <a class="card" href={`/modulos/${module.slug}/`}>
+          <small>{module.eyebrow} · {module.status}</small>
+          <h3>{module.title}</h3>
+          <p>{module.summary}</p>
+          <p class="card__footer">{module.level} →</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section>
+    <h2>Dois princípios que evitam diagnósticos falsos</h2>
+    <CitationCard claimId="AIS-SAFE-001" />
+    <CitationCard claimId="FA150-SENS-001" />
+  </section>
+</BaseLayout>
+

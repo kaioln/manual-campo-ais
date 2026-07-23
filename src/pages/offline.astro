@@ -1,0 +1,26 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Uso offline" description="Como usar o Manual de Campo AIS sem conexão." section="Ajuda">
+  <header class="page-header">
+    <p class="eyebrow">Sem backend</p>
+    <h1>Uso offline</h1>
+    <p class="lede">Depois do primeiro carregamento por HTTP, as páginas principais e recursos visitados ficam disponíveis no dispositivo.</p>
+  </header>
+  <section class="content-section">
+    <h2>O que fica no navegador</h2>
+    <ul>
+      <li>Tema claro/escuro.</li>
+      <li>Marcações de checklists.</li>
+      <li>Progresso das trilhas.</li>
+      <li>Cache de páginas e recursos estáticos.</li>
+    </ul>
+    <p>Nenhuma credencial, sentença colada ou identificação de navio é armazenada pela aplicação.</p>
+  </section>
+  <section class="content-section">
+    <h2>Atualização</h2>
+    <p>Quando houver rede e uma nova versão for carregada, o service worker substitui o cache controlado. Para uso crítico a bordo, confirme a revisão exibida no rodapé/metadados da página.</p>
+  </section>
+</BaseLayout>
+

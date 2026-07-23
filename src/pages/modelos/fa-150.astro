@@ -1,0 +1,56 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageMeta from "../../components/PageMeta.astro";
+import CitationCard from "../../components/CitationCard.astro";
+---
+
+<BaseLayout title="Furuno FA-150" description="Central técnica rastreável do Furuno FA-150." section="Modelos">
+  <header class="page-header">
+    <p class="eyebrow">Equipamento principal · exclusivo deste modelo</p>
+    <h1>Furuno FA-150</h1>
+    <p class="lede">Unidades, fluxo de dados, telas, interfaces e diagnóstico confirmados nos manuais OME-44310-M e IME-44310-P1.</p>
+  </header>
+  <PageMeta status="verificado" applicability={["Furuno FA-150", "FA-1501", "FA-1502", "revisões M/P1"]} sourceIds={["SRC-FUR-OME-M", "SRC-FUR-IME-P1"]} />
+
+  <div class="callout callout--warning">
+    <strong>Barreira de modelo</strong>
+    <p>Nenhuma pinagem, cor, menu, firmware ou sequência desta página é aplicável automaticamente ao FA-100, FA-170, FA-50, FA-70 ou FA-40.</p>
+  </div>
+
+  <section class="content-section">
+    <h2>Composição confirmada</h2>
+    <CitationCard claimId="FA150-SYS-001" />
+    <CitationCard claimId="FA150-SYS-002" />
+    <CitationCard claimId="FA150-PWR-001" />
+  </section>
+
+  <section class="content-section">
+    <h2>Arquitetura e interconexão</h2>
+    <figure class="diagram">
+      <img src="/diagrams/fa150-arquitetura.svg" alt="Diagrama funcional do FA-150 com antenas, transponder, monitor, sensores e consumidores." />
+      <figcaption>Diagrama original elaborado com base no manual de instalação IME-44310-P1, PDF 4–5 e 21–22. Não representa pinagem.</figcaption>
+    </figure>
+  </section>
+
+  <section class="content-section">
+    <h2>Interfaces documentadas</h2>
+    <CitationCard claimId="FA150-IO-001" />
+    <CitationCard claimId="FA150-IO-002" />
+    <CitationCard claimId="FA150-PILOT-001" />
+    <p>A pinagem completa permanece no desenho do fabricante. O site evita transcrevê-la fora do contexto da folha porque uma inversão, revisão ou transferência de modelo pode produzir falha.</p>
+  </section>
+
+  <section class="content-section">
+    <h2>Diagnóstico de primeiro nível</h2>
+    <CitationCard claimId="FA150-DIAG-001" />
+    <CitationCard claimId="FA150-DIAG-002" />
+    <CitationCard claimId="FA150-SENS-001" />
+  </section>
+
+  <section class="content-section">
+    <h2>Acesso e restauração</h2>
+    <CitationCard claimId="FA150-ACCESS-001" />
+    <CitationCard claimId="FA150-RESET-001" />
+  </section>
+</BaseLayout>
+

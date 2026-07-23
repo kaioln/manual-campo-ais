@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="320" viewBox="0 0 1300 320" role="img" aria-labelledby="title desc">
+  <title id="title">Fluxo resumido de troubleshooting</title>
+  <desc id="desc">Confirmar sintoma, preservar histórico, verificar energia e conexões, comparar entrada e saída, testar isoladamente, corrigir, confirmar e documentar.</desc>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 10 5 0 10z" fill="#2a768b"/></marker><style>.b{fill:#f8fbfc;stroke:#173f52;stroke-width:3}.t{font:700 18px system-ui,sans-serif;fill:#17262f}.l{stroke:#2a768b;stroke-width:3;marker-end:url(#a)}</style></defs>
+  <rect width="1300" height="320" fill="#eef4f6"/>
+  <g>
+    <rect class="b" x="25" y="105" width="150" height="90"/><text class="t" x="100" y="143" text-anchor="middle">Confirmar</text><text class="t" x="100" y="168" text-anchor="middle">sintoma</text>
+    <rect class="b" x="215" y="105" width="150" height="90"/><text class="t" x="290" y="143" text-anchor="middle">Preservar</text><text class="t" x="290" y="168" text-anchor="middle">histórico</text>
+    <rect class="b" x="405" y="105" width="150" height="90"/><text class="t" x="480" y="143" text-anchor="middle">Energia e</text><text class="t" x="480" y="168" text-anchor="middle">conectores</text>
+    <rect class="b" x="595" y="105" width="150" height="90"/><text class="t" x="670" y="143" text-anchor="middle">Entrada ↔</text><text class="t" x="670" y="168" text-anchor="middle">saída</text>
+    <rect class="b" x="785" y="105" width="150" height="90"/><text class="t" x="860" y="143" text-anchor="middle">Teste</text><text class="t" x="860" y="168" text-anchor="middle">isolado</text>
+    <rect class="b" x="975" y="105" width="150" height="90"/><text class="t" x="1050" y="143" text-anchor="middle">Corrigir e</text><text class="t" x="1050" y="168" text-anchor="middle">confirmar</text>
+    <rect class="b" x="1165" y="105" width="110" height="90"/><text class="t" x="1220" y="143" text-anchor="middle">Restaurar</text><text class="t" x="1220" y="168" text-anchor="middle">e registrar</text>
+    <path class="l" d="M175 150h40M365 150h40M555 150h40M745 150h40M935 150h40M1125 150h40"/>
+  </g>
+</svg>
+

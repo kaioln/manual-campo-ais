@@ -1,0 +1,58 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { sources } from "../data/sources";
+import { claims } from "../data/claims";
+---
+
+<BaseLayout title="Fontes e rastreabilidade" description="Registro central de fontes, alegações e aplicabilidade." section="Governança">
+  <header class="page-header">
+    <p class="eyebrow">Governança documental</p>
+    <h1>Fontes e rastreabilidade</h1>
+    <p class="lede">Cada afirmação confirmada aponta para documento, revisão, página/seção, confiança e modelo aplicável.</p>
+  </header>
+
+  <section>
+    <h2>Registro de fontes</h2>
+    <div class="card-grid">
+      {sources.map((source) => (
+        <article class="card">
+          <small>{source.id} · {source.kind}</small>
+          <h3>{source.title}</h3>
+          <p>{source.organization}</p>
+          <p>{source.revision} · {source.date}</p>
+          <p><strong>Aplicabilidade:</strong> {source.applicability}</p>
+          {source.url ? <p class="card__footer"><a href={source.url} rel="noreferrer">Fonte oficial ↗</a></p> : <p class="card__footer">Documento fornecido; não publicado</p>}
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section>
+    <h2>Ledger de alegações</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>ID</th><th>Afirmação</th><th>Classe</th><th>Fonte</th><th>Referência</th></tr></thead>
+        <tbody>
+          {claims.map((claim) => (
+            <tr>
+              <td><code>{claim.id}</code></td>
+              <td>{claim.statement}</td>
+              <td>{claim.classification}</td>
+              <td>{claim.sourceId}</td>
+              <td>{claim.page}; {claim.section}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>Conflito controlado</h2>
+    <div class="callout callout--warning">
+      <strong>Norma atual ≠ capacidade automática do legado</strong>
+      <p>A ITU-R M.1371-6 (2026) e a IEC 61162-1:2024 são posteriores aos manuais do FA-150. Elas contextualizam a norma vigente, mas não alteram por inferência o hardware, o firmware ou as interfaces do equipamento.</p>
+    </div>
+  </section>
+</BaseLayout>
+

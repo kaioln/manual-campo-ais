@@ -1,0 +1,45 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CitationCard from "../components/CitationCard.astro";
+---
+
+<BaseLayout title="Acesso técnico autorizado" description="Política segura para níveis de acesso técnico AIS." section="Segurança">
+  <header class="page-header">
+    <p class="eyebrow">Sem credenciais públicas</p>
+    <h1>Acesso técnico autorizado</h1>
+    <p class="lede">Finalidade, risco, documentação e solicitação de acesso — sem publicar ou deduzir senhas.</p>
+  </header>
+
+  <div class="callout callout--danger">
+    <strong>Credencial</strong>
+    <p>Credencial fornecida exclusivamente pelo fabricante ou assistência autorizada.</p>
+  </div>
+
+  <section class="content-section">
+    <h2>O que o nível técnico pode afetar</h2>
+    <ul>
+      <li>Identidade, geometria e referência de antena.</li>
+      <li>Função, velocidade e prioridade de portas.</li>
+      <li>Parâmetros de rede/opções, quando instaladas.</li>
+      <li>Diagnóstico, restauração e configurações protegidas.</li>
+    </ul>
+    <CitationCard claimId="FA150-ACCESS-001" />
+  </section>
+
+  <section class="content-section">
+    <h2>Documentação exigida</h2>
+    <ol class="steps">
+      <li>Ordem de serviço e autorização do armador/operador.</li>
+      <li>Modelo, número de série, região e versões do equipamento.</li>
+      <li>Manual/revisão aplicável e parâmetros a alterar.</li>
+      <li>Estado inicial, backup/registro e plano de retorno.</li>
+      <li>Contato do fabricante ou representante autorizado.</li>
+    </ol>
+  </section>
+
+  <section class="content-section">
+    <h2>Como solicitar</h2>
+    <p>Solicite ao fabricante ou assistência autorizada informando identificação do equipamento, vínculo de serviço, embarcação/operador, escopo e parâmetro necessário. Não use credencial encontrada em fórum, vazamento, equipamento de terceiro ou tentativa de força bruta.</p>
+  </section>
+</BaseLayout>
+

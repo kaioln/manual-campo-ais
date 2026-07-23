@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageMeta from "../components/PageMeta.astro";
+import { reportTemplates } from "../data/reportTemplates";
+---
+
+<BaseLayout title="Modelos de relatório" description="Modelos imprimíveis de relatório técnico AIS." section="Procedimentos de bordo">
+  <header class="page-header">
+    <p class="eyebrow">Formulários locais · não persistidos</p>
+    <h1>Modelos de relatório</h1>
+    <p class="lede">Estruturas para inspeção, instalação, manutenção, substituição, software, commissioning e pendências.</p>
+  </header>
+  <PageMeta status="verificado" applicability={["Serviço AIS autorizado", "Modelo sanitizado"]} sourceIds={["SRC-PRONAV-RAT", "SRC-PRONAV-POP"]} />
+  <div class="filter-bar no-print">
+    <label><span class="sr-only">Escolher relatório</span>
+      <select id="report-select">{reportTemplates.map((item) => <option value={item.id}>{item.title}</option>)}</select>
+    </label>
+    <button id="print-report" type="button">Imprimir</button>
+  </div>
+  <div class="callout callout--warning no-print"><strong>Dados sensíveis</strong><p>Não salve dados de navio em computador compartilhado. Esta página não persiste o conteúdo digitado.</p></div>
+  {reportTemplates.map((item, index) => (
+    <section class="report-sheet content-section" data-report={item.id} hidden={index !== 0}>
+      <p class="eyebrow">Relatório técnico AIS</p>
+      <h2>{item.title}</h2>
+      <p>{item.purpose}</p>
+      {item.sections.map((section) => (
+        <div class="report-field">
+          <h3>{section}</h3>
+          <div contenteditable="true" role="textbox" aria-label={section}></div>
+        </div>
+      ))}
+    </section>
+  ))}
+  <style>
+    .report-field { margin: 1.2rem 0; break-inside: avoid; }
+    .report-field h3 { margin: 0 0 .35rem; font-size: .95rem; }
+    .report-field [contenteditable] { min-height: 5rem; padding: .7rem; border: 1px solid var(--line); background: var(--surface); }
+    @media print { .report-field [contenteditable] { min-height: 4rem; } }
+  </style>
+  <script>
+    const select = document.querySelector<HTMLSelectElement>("#report-select");
+    const show = () => document.querySelectorAll<HTMLElement>(".report-sheet").forEach((sheet) => sheet.hidden = sheet.dataset.report !== select?.value);
+    select?.addEventListener("change", show);
+    document.querySelector("#print-report")?.addEventListener("click", () => print());
+  </script>
+</BaseLayout>
+

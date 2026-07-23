@@ -1,0 +1,116 @@
+---
+import "../styles/global.css";
+import { modules } from "../data/modules";
+
+interface Props {
+  title: string;
+  description: string;
+  section?: string;
+}
+
+const { title, description, section = "Manual de Campo AIS" } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const coreLinks = [
+  { href: "/", label: "Visão geral" },
+  { href: "/modelos/fa-150/", label: "Furuno FA-150" },
+  { href: "/diagnostico/", label: "Diagnóstico" },
+  { href: "/ferramentas/analisador/", label: "Analisador de sentenças" },
+  { href: "/checklists/", label: "Checklists" },
+  { href: "/casos/", label: "Casos práticos" },
+  { href: "/relatorios/", label: "Modelos de relatório" },
+  { href: "/glossario/", label: "Glossário" },
+  { href: "/treinamento/", label: "Treinamento" },
+  { href: "/fontes/", label: "Fontes e rastreabilidade" }
+];
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0b2535" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/icons/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <title>{title} · Manual de Campo AIS</title>
+    <script is:inline>
+      (() => {
+        const saved = localStorage.getItem("ais-theme");
+        const theme = saved || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="Manual de Campo AIS — início">
+        <span class="brand__mark" aria-hidden="true">AIS</span>
+        <span><strong>Manual de Campo</strong><small>treinamento e consulta técnica</small></span>
+      </a>
+      <form class="search-compact" action="/buscar/" role="search">
+        <label class="sr-only" for="q-global">Pesquisar</label>
+        <input id="q-global" name="q" type="search" placeholder="Sintoma, modelo, sentença…" />
+        <button type="submit">Buscar</button>
+      </form>
+      <button class="theme-toggle" type="button" aria-label="Alternar tema" aria-pressed="false">
+        <span aria-hidden="true">◐</span>
+      </button>
+    </header>
+    <div class="shell">
+      <aside class="sidebar" aria-label="Navegação principal">
+        <details class="mobile-nav">
+          <summary>Navegação</summary>
+          <div class="mobile-nav__content">
+            <nav>
+              <p class="nav-label">Consulta rápida</p>
+              {coreLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+              <p class="nav-label">Módulos</p>
+              {modules.map((module) => <a href={`/modulos/${module.slug}/`}><span>{module.order}</span>{module.title}</a>)}
+            </nav>
+          </div>
+        </details>
+        <nav class="desktop-nav">
+          <p class="nav-label">Consulta rápida</p>
+          {coreLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+          <p class="nav-label">Módulos</p>
+          {modules.map((module) => <a href={`/modulos/${module.slug}/`}><span>{String(module.order).padStart(2, "0")}</span>{module.title}</a>)}
+        </nav>
+      </aside>
+      <main id="conteudo" class="main">
+        <div class="breadcrumbs" aria-label="Breadcrumb">
+          <a href="/">Início</a><span aria-hidden="true">/</span><span>{section}</span>
+        </div>
+        <slot />
+      </main>
+    </div>
+    <footer class="site-footer">
+      <p><strong>Uso autorizado.</strong> Não substitui manual aplicável, procedimento de bordo, norma, julgamento do oficial ou autorização do fabricante.</p>
+      <nav aria-label="Rodapé">
+        <a href="/acesso-tecnico/">Acesso técnico autorizado</a>
+        <a href="/o-que-mudou/">O que mudou</a>
+        <a href="/offline/">Uso offline</a>
+      </nav>
+    </footer>
+    <script is:inline>
+      const toggle = document.querySelector(".theme-toggle");
+      const syncTheme = () => {
+        const dark = document.documentElement.dataset.theme === "dark";
+        toggle?.setAttribute("aria-pressed", String(dark));
+      };
+      toggle?.addEventListener("click", () => {
+        const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+        document.documentElement.dataset.theme = next;
+        localStorage.setItem("ais-theme", next);
+        syncTheme();
+      });
+      syncTheme();
+      if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+        addEventListener("load", () => navigator.serviceWorker.register("/sw.js").catch(() => {}));
+      }
+    </script>
+  </body>
+</html>

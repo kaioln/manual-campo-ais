@@ -1,0 +1,32 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageMeta from "../../components/PageMeta.astro";
+import SectionRenderer from "../../components/SectionRenderer.astro";
+import { modules } from "../../data/modules";
+
+export function getStaticPaths() {
+  return modules.map((module) => ({ params: { slug: module.slug }, props: { module } }));
+}
+
+const { module } = Astro.props;
+---
+
+<BaseLayout title={module.title} description={module.summary} section={module.eyebrow}>
+  <header class="page-header">
+    <p class="eyebrow">{module.eyebrow} · {module.level}</p>
+    <h1>{module.title}</h1>
+    <p class="lede">{module.summary}</p>
+  </header>
+  <PageMeta status={module.status} applicability={module.applicability} sourceIds={module.sourceIds} />
+  {module.diagram && (
+    <figure class="diagram">
+      <img src={module.diagram.src} alt={module.diagram.alt} />
+      <figcaption>{module.diagram.caption}</figcaption>
+    </figure>
+  )}
+  {module.sections.map((section) => <SectionRenderer section={section} />)}
+  <section class="content-section">
+    <h2>Próxima ação segura</h2>
+    <p>Antes de aplicar qualquer instrução a bordo, confirme modelo, revisão, versão de software, autorização, estado inicial e fonte citada. Se a informação necessária não estiver documentada, registre a lacuna e escale.</p>
+  </section>
+</BaseLayout>

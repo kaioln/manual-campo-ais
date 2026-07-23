@@ -1,0 +1,64 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageMeta from "../components/PageMeta.astro";
+import { practicalCases } from "../data/practicalCases";
+---
+
+<BaseLayout title="Casos práticos" description="Casos interativos para escolher o próximo teste em AIS." section="Treinamento">
+  <header class="page-header">
+    <p class="eyebrow">Simulação local · sem equipamento real</p>
+    <h1>Casos práticos</h1>
+    <p class="lede">Escolha o próximo teste e compare risco, resultado esperado e decisão seguinte.</p>
+  </header>
+  <PageMeta status="verificado" applicability={["Treinamento FA-150", "Sem transmissão ou controle real"]} sourceIds={["SRC-FUR-OME-M", "SRC-FUR-IME-P1", "SRC-IMO-A1106"]} />
+  <div class="filter-bar no-print">
+    <label><span class="sr-only">Escolher caso</span>
+      <select id="case-select">{practicalCases.map((item) => <option value={item.id}>{item.title}</option>)}</select>
+    </label>
+    <button id="reset-case" type="button">Reiniciar caso</button>
+  </div>
+  {practicalCases.map((item, caseIndex) => (
+    <section class="case-sheet content-section" data-case={item.id} hidden={caseIndex !== 0}>
+      <h2>{item.title}</h2>
+      <div class="callout callout--info"><strong>Situação</strong><p>{item.situation}</p></div>
+      <h3>Qual é o próximo teste?</h3>
+      <div class="case-choices">
+        {item.choices.map((choice, index) => (
+          <div class="case-choice">
+            <button type="button" data-choice={`${item.id}:${index}`}>{choice.label}</button>
+            <div class="case-feedback" data-feedback={`${item.id}:${index}`} hidden>
+              <p><strong>Avaliação:</strong> {choice.assessment}</p>
+              <p><strong>Por quê:</strong> {choice.why}</p>
+              <p><strong>Risco:</strong> {choice.risk}</p>
+              <p><strong>Resultado esperado:</strong> {choice.expected}</p>
+              <p><strong>Próxima decisão:</strong> {choice.next}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p><small>Referências: {item.sourceIds.join(" · ")}</small></p>
+    </section>
+  ))}
+  <style>
+    .case-choice { margin: .7rem 0; border: 1px solid var(--line); background: var(--surface); }
+    .case-choice > button { width: 100%; padding: .85rem 1rem; border: 0; color: var(--ink); background: transparent; text-align: left; font-weight: 750; }
+    .case-choice > button:hover, .case-choice > button:focus-visible { color: var(--cyan); background: var(--surface-alt); }
+    .case-feedback { padding: .8rem 1rem; border-top: 1px solid var(--line); }
+    .case-feedback p { margin: .35rem 0; }
+  </style>
+  <script>
+    const select = document.querySelector<HTMLSelectElement>("#case-select");
+    const reset = () => document.querySelectorAll<HTMLElement>(".case-feedback").forEach((feedback) => feedback.hidden = true);
+    const show = () => {
+      reset();
+      document.querySelectorAll<HTMLElement>(".case-sheet").forEach((sheet) => sheet.hidden = sheet.dataset.case !== select?.value);
+    };
+    select?.addEventListener("change", show);
+    document.querySelector("#reset-case")?.addEventListener("click", reset);
+    document.querySelectorAll<HTMLButtonElement>("[data-choice]").forEach((button) => button.addEventListener("click", () => {
+      const active = button.dataset.choice ?? "";
+      document.querySelectorAll<HTMLElement>(".case-feedback").forEach((feedback) => feedback.hidden = feedback.dataset.feedback !== active);
+    }));
+  </script>
+</BaseLayout>
+

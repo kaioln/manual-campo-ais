@@ -1,0 +1,49 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { glossary } from "../data/glossary";
+import PageMeta from "../components/PageMeta.astro";
+---
+
+<BaseLayout title="Glossário" description="Glossário pesquisável português–inglês de AIS." section="Consulta rápida">
+  <header class="page-header">
+    <p class="eyebrow">Português · English · sigla</p>
+    <h1>Glossário AIS</h1>
+    <p class="lede">Pesquise por termo em português, inglês, sigla ou sinônimo de campo.</p>
+  </header>
+  <PageMeta status="rascunho controlado" applicability={["Terminologia AIS e integração"]} sourceIds={["SRC-FUR-OME-M", "SRC-FUR-IME-P1", "SRC-ITU-M1371-6"]} />
+  <div class="filter-bar no-print">
+    <label><span class="sr-only">Filtrar glossário</span><input id="glossary-filter" type="search" placeholder="Ex.: rumo, heading, HDG…" /></label>
+    <button id="glossary-clear" type="button">Limpar</button>
+  </div>
+  <p id="glossary-count" aria-live="polite">{glossary.length} termos</p>
+  <div class="table-wrap">
+    <table id="glossary-table">
+      <thead><tr><th>Português</th><th>English</th><th>Sigla</th><th>Definição</th></tr></thead>
+      <tbody>
+        {glossary.map((entry) => (
+          <tr data-search={`${entry.pt} ${entry.en} ${entry.acronym ?? ""} ${entry.tags.join(" ")}`.toLowerCase()}>
+            <td><strong>{entry.pt}</strong></td><td>{entry.en}</td><td>{entry.acronym ?? "—"}</td><td>{entry.definition}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <script>
+    const input = document.querySelector<HTMLInputElement>("#glossary-filter");
+    const rows = [...document.querySelectorAll<HTMLTableRowElement>("#glossary-table tbody tr")];
+    const count = document.querySelector("#glossary-count");
+    const normalize = (value: string) => value.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+    const apply = () => {
+      const query = normalize(input?.value ?? "");
+      let visible = 0;
+      rows.forEach((row) => {
+        const match = normalize(row.dataset.search ?? "").includes(query);
+        row.hidden = !match;
+        if (match) visible += 1;
+      });
+      if (count) count.textContent = `${visible} termo${visible === 1 ? "" : "s"}`;
+    };
+    input?.addEventListener("input", apply);
+    document.querySelector("#glossary-clear")?.addEventListener("click", () => { if (input) input.value = ""; apply(); input?.focus(); });
+  </script>
+</BaseLayout>

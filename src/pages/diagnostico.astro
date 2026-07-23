@@ -1,0 +1,67 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { troubleCases } from "../data/troubleshooting";
+import PageMeta from "../components/PageMeta.astro";
+---
+
+<BaseLayout title="Diagnóstico" description="Central de troubleshooting AIS por sintoma e próximo teste." section="Consulta de campo">
+  <header class="page-header">
+    <p class="eyebrow">Sintoma → hipótese → teste → decisão</p>
+    <h1>Central de diagnóstico</h1>
+    <p class="lede">Escolha o teste que separa hipóteses com menor risco. Os valores específicos permanecem vinculados ao manual e ao arranjo real.</p>
+  </header>
+  <PageMeta status="verificado" applicability={["Furuno FA-150", "Método geral de campo"]} sourceIds={["SRC-FUR-OME-M", "SRC-FUR-IME-P1", "SRC-PRONAV-POP"]} />
+
+  <div class="filter-bar no-print">
+    <label><span class="sr-only">Filtrar sintomas</span><input id="trouble-filter" type="search" placeholder="Ex.: sem heading, ECDIS, reinicia…" /></label>
+    <button id="trouble-clear" type="button">Limpar</button>
+  </div>
+  <p id="trouble-count" aria-live="polite">{troubleCases.length} sintomas</p>
+
+  <div id="trouble-list">
+    {troubleCases.map((item) => (
+      <details id={item.id} class="trouble-card" data-search={`${item.symptom} ${item.likely.join(" ")} ${item.firstTest}`.toLowerCase()}>
+        <summary>{item.symptom}</summary>
+        <div class="trouble-card__body">
+          <dl>
+            <div><dt>Causas mais prováveis</dt><dd>{item.likely.join("; ")}</dd></div>
+            <div><dt>Primeiro teste</dt><dd>{item.firstTest}</dd></div>
+            <div><dt>Resultado anormal</dt><dd>{item.abnormal}</dd></div>
+            <div><dt>Próxima decisão</dt><dd>{item.next}</dd></div>
+            <div><dt>Confirmação</dt><dd>{item.confirmation}</dd></div>
+            <div><dt>Referências</dt><dd>{item.sourceIds.join(" · ")}</dd></div>
+          </dl>
+        </div>
+      </details>
+    ))}
+  </div>
+
+  <style>
+    .trouble-card { margin: .65rem 0; border: 1px solid var(--line); background: var(--surface); }
+    .trouble-card summary { padding: .85rem 1rem; font-weight: 750; cursor: pointer; }
+    .trouble-card[open] summary { color: var(--cyan); border-bottom: 1px solid var(--line); }
+    .trouble-card__body { padding: .3rem 1rem 1rem; }
+    .trouble-card dl div { display: grid; grid-template-columns: 12rem 1fr; gap: 1rem; padding: .65rem 0; border-bottom: 1px solid var(--line); }
+    .trouble-card dt { color: var(--muted); font-weight: 700; }
+    .trouble-card dd { margin: 0; }
+    @media (max-width: 640px) { .trouble-card dl div { grid-template-columns: 1fr; gap: .2rem; } }
+  </style>
+  <script>
+    const input = document.querySelector<HTMLInputElement>("#trouble-filter");
+    const cards = [...document.querySelectorAll<HTMLElement>(".trouble-card")];
+    const count = document.querySelector("#trouble-count");
+    const normalize = (value: string) => value.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase();
+    const apply = () => {
+      const query = normalize(input?.value ?? "");
+      let visible = 0;
+      cards.forEach((card) => {
+        const match = normalize(card.dataset.search ?? "").includes(query);
+        card.hidden = !match;
+        if (match) visible += 1;
+      });
+      if (count) count.textContent = `${visible} sintoma${visible === 1 ? "" : "s"}`;
+    };
+    input?.addEventListener("input", apply);
+    document.querySelector("#trouble-clear")?.addEventListener("click", () => { if (input) input.value = ""; apply(); input?.focus(); });
+  </script>
+</BaseLayout>

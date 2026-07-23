@@ -1,0 +1,32 @@
+---
+import { claimById } from "../data/claims";
+import { sourceById } from "../data/sources";
+
+interface Props {
+  claimId: string;
+}
+
+const { claimId } = Astro.props;
+const claim = claimById[claimId];
+if (!claim) throw new Error(`Claim inexistente: ${claimId}`);
+const source = sourceById[claim.sourceId];
+if (!source) throw new Error(`Fonte inexistente: ${claim.sourceId}`);
+---
+
+<aside class="citation-card" data-claim-id={claim.id}>
+  <div class="citation-card__top">
+    <span class:list={["evidence-badge", `evidence-badge--${claim.classification.toLowerCase().replaceAll(" ", "-")}`]}>
+      {claim.classification}
+    </span>
+    <code>{claim.id}</code>
+  </div>
+  <p>{claim.statement}</p>
+  <dl class="citation-meta">
+    <div><dt>Fonte</dt><dd>{source.title}</dd></div>
+    <div><dt>Referência</dt><dd>{claim.page}; {claim.section}</dd></div>
+    <div><dt>Confiança</dt><dd>{claim.confidence}</dd></div>
+    <div><dt>Aplicabilidade</dt><dd>{claim.applicability}</dd></div>
+  </dl>
+  {claim.note && <p class="citation-note">{claim.note}</p>}
+</aside>
+

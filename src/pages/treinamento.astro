@@ -1,0 +1,65 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { trainingTrails } from "../data/training";
+import PageMeta from "../components/PageMeta.astro";
+---
+
+<BaseLayout title="Treinamento" description="Trilhas locais de treinamento AIS." section="Treinamento">
+  <header class="page-header">
+    <p class="eyebrow">Progresso local · sem servidor</p>
+    <h1>Trilhas de formação</h1>
+    <p class="lede">Percursos por nível e especialidade. Marque uma aula somente depois de conseguir explicar objetivo, risco, evidência e próximo teste.</p>
+  </header>
+  <PageMeta status="verificado" applicability={["Formação técnica", "Simulação sem equipamento real"]} sourceIds={["SRC-FUR-OME-M", "SRC-FUR-IME-P1", "SRC-IMO-A1106"]} />
+
+  <div class="card-grid training-grid">
+    {trainingTrails.map((trail) => (
+      <section class="card training-card">
+        <small>{trail.audience}</small>
+        <h2>{trail.title}</h2>
+        <ul>
+          {trail.lessons.map((lesson, index) => (
+            <li>
+              <label>
+                <input type="checkbox" data-progress={`${trail.id}:${index}`} />
+                <span><a href={lesson.href}>{lesson.title}</a><small>{lesson.objective}</small></span>
+              </label>
+            </li>
+          ))}
+        </ul>
+        <p class="training-progress" data-trail={trail.id} aria-live="polite">0% concluído</p>
+      </section>
+    ))}
+  </div>
+  <style>
+    .training-card h2 { max-width: none; }
+    .training-card ul { list-style: none; padding: 0; }
+    .training-card li { padding: .6rem 0; border-top: 1px solid var(--line); }
+    .training-card label { display: grid; grid-template-columns: auto 1fr; gap: .7rem; align-items: start; }
+    .training-card label small { display: block; margin-top: .2rem; color: var(--muted); text-transform: none; letter-spacing: 0; }
+    .training-progress { margin-top: auto !important; padding-top: .8rem; border-top: 1px solid var(--line); color: var(--cyan) !important; font-weight: 800; }
+  </style>
+  <script>
+    const key = "ais-training-v1";
+    const state: Record<string, boolean> = JSON.parse(localStorage.getItem(key) ?? "{}");
+    const boxes = [...document.querySelectorAll<HTMLInputElement>("[data-progress]")];
+    const update = () => {
+      document.querySelectorAll<HTMLElement>("[data-trail]").forEach((label) => {
+        const trail = label.dataset.trail ?? "";
+        const trailBoxes = boxes.filter((box) => box.dataset.progress?.startsWith(`${trail}:`));
+        const done = trailBoxes.filter((box) => box.checked).length;
+        label.textContent = `${Math.round((done / trailBoxes.length) * 100)}% concluído`;
+      });
+    };
+    boxes.forEach((box) => {
+      const id = box.dataset.progress ?? "";
+      box.checked = Boolean(state[id]);
+      box.addEventListener("change", () => {
+        state[id] = box.checked;
+        localStorage.setItem(key, JSON.stringify(state));
+        update();
+      });
+    });
+    update();
+  </script>
+</BaseLayout>

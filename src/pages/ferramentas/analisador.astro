@@ -1,0 +1,115 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageMeta from "../../components/PageMeta.astro";
+---
+
+<BaseLayout title="Analisador de sentenças" description="Validador local de sentenças IEC 61162/NMEA, com checksum e campos." section="Ferramentas">
+  <header class="page-header">
+    <p class="eyebrow">Ferramenta local · nenhum dado é enviado</p>
+    <h1>Analisador IEC 61162 / NMEA</h1>
+    <p class="lede">Cole uma sentença sanitizada para verificar delimitador, identificador, campos e checksum. A ferramenta não se conecta a equipamentos.</p>
+  </header>
+  <PageMeta status="verificado" applicability={["Sentenças ASCII", "Lista de E/S do FA-150 revisão M"]} sourceIds={["SRC-FUR-OME-M", "SRC-IEC-61162-1-2024"]} />
+
+  <div class="callout callout--warning">
+    <strong>Privacidade e escopo</strong>
+    <p>Remova MMSI, posição, destino e outros dados reais antes de colar. A análise ocorre somente no navegador e não é persistida.</p>
+  </div>
+
+  <section class="content-section tool-panel">
+    <h2>Entrada</h2>
+    <label for="sentence-input">Uma sentença por vez</label>
+    <textarea id="sentence-input" rows="5" spellcheck="false" placeholder="!AIVDM,1,1,,A,...,0*HH"></textarea>
+    <div class="hero-actions no-print">
+      <button class="tool-button" id="analyze" type="button">Analisar</button>
+      <button class="tool-button" id="example" type="button">Usar exemplo sanitizado</button>
+      <button class="tool-button" id="clear" type="button">Limpar</button>
+    </div>
+  </section>
+
+  <section id="analysis-result" class="content-section" aria-live="polite" hidden>
+    <h2>Resultado</h2>
+    <div id="summary"></div>
+    <dl class="citation-meta" id="sentence-meta"></dl>
+    <div id="messages"></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Campo</th><th>Valor</th><th>Significado</th></tr></thead>
+        <tbody id="fields"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>Como interpretar</h2>
+    <ol class="steps">
+      <li>Checksum válido confirma apenas a integridade do texto capturado, não a veracidade do dado.</li>
+      <li>Sentença presente não prova que o AIS a aceitou; revise flags, qualidade, prioridade e função da porta.</li>
+      <li>A lista “confirmada no FA-150” vem do manual do operador revisão M, apêndice 2, PDF 90.</li>
+      <li>Payload AIVDM/AIVDO permanece codificado; esta ferramenta não inventa campos binários sem a norma aplicável.</li>
+    </ol>
+  </section>
+
+  <script>
+    import { calculateChecksum, parseSentence } from "../../utilities/nmea";
+
+    const input = document.querySelector<HTMLTextAreaElement>("#sentence-input");
+    const result = document.querySelector<HTMLElement>("#analysis-result");
+    const summary = document.querySelector<HTMLElement>("#summary");
+    const meta = document.querySelector<HTMLElement>("#sentence-meta");
+    const messages = document.querySelector<HTMLElement>("#messages");
+    const fields = document.querySelector<HTMLTableSectionElement>("#fields");
+
+    const render = () => {
+      if (!input || !result || !summary || !meta || !messages || !fields) return;
+      const parsed = parseSentence(input.value);
+      result.hidden = false;
+      summary.className = `callout ${parsed.checksumValid ? "callout--info" : "callout--danger"}`;
+      summary.replaceChildren();
+      const strong = document.createElement("strong");
+      strong.textContent = parsed.checksumValid ? "Checksum válido" : parsed.checksumValid === false ? "Checksum inválido" : "Checksum não verificável";
+      const p = document.createElement("p");
+      p.textContent = parsed.calculatedChecksum ? `Calculado: ${parsed.calculatedChecksum}. Recebido: ${parsed.providedChecksum ?? "ausente"}.` : "Corrija a estrutura antes de calcular.";
+      summary.append(strong, p);
+
+      const pairs: Array<[string, string]> = [
+        ["Identificador", parsed.identifier || "—"],
+        ["Talker", parsed.talker || "—"],
+        ["Formatter", parsed.formatter || "—"],
+        ["FA-150 revisão M", parsed.supportedByFa150]
+      ];
+      meta.replaceChildren(...pairs.map(([label, value]) => {
+        const div = document.createElement("div");
+        const dt = document.createElement("dt"); dt.textContent = label;
+        const dd = document.createElement("dd"); dd.textContent = value;
+        div.append(dt, dd); return div;
+      }));
+
+      messages.replaceChildren();
+      [...parsed.structuralErrors, ...parsed.warnings].forEach((message) => {
+        const p = document.createElement("p");
+        p.textContent = message;
+        messages.append(p);
+      });
+      fields.replaceChildren(...parsed.fields.map((field) => {
+        const row = document.createElement("tr");
+        [ `${field.index}. ${field.label}`, field.value || "(vazio)", field.explanation ].forEach((value) => {
+          const cell = document.createElement("td"); cell.textContent = value; row.append(cell);
+        });
+        return row;
+      }));
+    };
+
+    document.querySelector("#analyze")?.addEventListener("click", render);
+    document.querySelector("#clear")?.addEventListener("click", () => {
+      if (input) input.value = "";
+      if (result) result.hidden = true;
+      input?.focus();
+    });
+    document.querySelector("#example")?.addEventListener("click", () => {
+      const body = "AIVDM,1,1,,A,13aG?P0000P00000000000000000,0";
+      if (input) input.value = `!${body}*${calculateChecksum(body)}`;
+      render();
+    });
+  </script>
+</BaseLayout>
