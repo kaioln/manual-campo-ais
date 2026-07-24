@@ -1,0 +1,50 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import PageMeta from "../../../components/PageMeta.astro";
+import CitationCard from "../../../components/CitationCard.astro";
+import Fa150Nav from "../../../components/Fa150Nav.astro";
+import { fa150CompassDistances, fa150InstallationRules } from "../../../data/fa150";
+---
+
+<BaseLayout title="Instalação do Furuno FA-150" description="Requisitos rastreáveis de instalação, antenas, cabos e proteção do FA-150." section="FA-150 · Instalação">
+  <header class="page-header">
+    <p class="eyebrow">IME-44310-P1 · revisão P1</p>
+    <h1>Instalação do FA-150</h1>
+    <p class="lede">Requisitos confirmados para antenas, coaxiais, distâncias de compasso, alimentação e proteção.</p>
+  </header>
+  <PageMeta status="verificado" applicability={["Furuno FA-150", "revisão P1"]} sourceIds={["SRC-FUR-IME-P1", "SRC-FUR-OME-M"]} />
+  <Fa150Nav />
+  <div class="callout callout--danger"><strong>Intervenção autorizada</strong><p>Desenergize conforme procedimento de bordo. Não meça continuidade energizada, não transmita sem carga/antena apropriada e não rearme proteção sem investigar a causa.</p></div>
+
+  <section>
+    <h2>Regras de antena e cabeamento</h2>
+    <CitationCard claimId="FA150-ANT-001" />
+    <CitationCard claimId="FA150-ANT-002" />
+    <CitationCard claimId="FA150-CABLE-001" />
+    <div class="table-wrap" role="region" aria-label="Regras de instalação do FA-150" tabindex="0">
+      <table class="technical-table">
+        <caption>Valores exclusivos do FA-150; confirme sempre o desenho aplicável ao número de série.</caption>
+        <thead><tr><th scope="col">Grupo</th><th scope="col">Requisito</th><th scope="col">Fonte</th></tr></thead>
+        <tbody>{fa150InstallationRules.map((item) => <tr><th scope="row">{item.group}</th><td>{item.requirement}</td><td>{item.source}</td></tr>)}</tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Distâncias seguras de compasso</h2>
+    <CitationCard claimId="FA150-COMPASS-001" />
+    <div class="table-wrap" role="region" aria-label="Distâncias de compasso das unidades do FA-150" tabindex="0">
+      <table class="technical-table">
+        <caption>IME-44310-P1, PDF 3, Safety Instructions.</caption>
+        <thead><tr><th scope="col">Unidade</th><th scope="col">Compasso padrão</th><th scope="col">Compasso de governo</th></tr></thead>
+        <tbody>{fa150CompassDistances.map((row) => <tr><th scope="row">{row[0]}</th><td>{row[1]}</td><td>{row[2]}</td></tr>)}</tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>Alimentação e proteção</h2>
+    <CitationCard claimId="FA150-FUSE-001" />
+    <p>Antes da primeira energização, confirme polaridade, proteção, aterramento e tensão no desenho do equipamento. O valor de corrente deve ser medido em série com instrumento e categoria adequados; nunca coloque o multímetro em corrente diretamente em paralelo com a fonte.</p>
+  </section>
+</BaseLayout>

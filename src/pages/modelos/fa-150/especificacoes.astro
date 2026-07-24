@@ -1,0 +1,19 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import PageMeta from "../../../components/PageMeta.astro";
+import CitationCard from "../../../components/CitationCard.astro";
+import Fa150Nav from "../../../components/Fa150Nav.astro";
+import { fa150Specifications } from "../../../data/fa150";
+---
+
+<BaseLayout title="Especificações do Furuno FA-150" description="Especificações rastreáveis de RF, GNSS, energia e proteção do FA-150." section="FA-150 · Especificações">
+  <header class="page-header"><p class="eyebrow">OME-44310-M · PDF 115–116</p><h1>Especificações</h1><p class="lede">Valores de referência do modelo para identificação e diagnóstico — não transferíveis a outras gerações.</p></header>
+  <PageMeta status="verificado" applicability={["FA-150", "FA-1501", "FA-1502", "revisão M"]} sourceIds={["SRC-FUR-OME-M"]} />
+  <Fa150Nav />
+  <CitationCard claimId="FA150-SPEC-001" /><CitationCard claimId="FA150-RFSAFE-001" />
+  <section>
+    <h2>Tabela consolidada</h2>
+    <div class="table-wrap" role="region" aria-label="Especificações do FA-150" tabindex="0"><table class="technical-table"><caption>OME-44310-M, PDF 115–116. Confirme revisão e unidade antes de usar em laudo.</caption><thead><tr><th scope="col">Sistema</th><th scope="col">Parâmetro</th><th scope="col">Valor</th></tr></thead><tbody>{fa150Specifications.map((row) => <tr><th scope="row">{row[0]}</th><td>{row[1]}</td><td>{row[2]}</td></tr>)}</tbody></table></div>
+  </section>
+  <div class="callout callout--warning"><strong>Interpretação</strong><p>Um valor nominal fora de contexto não fecha diagnóstico. Compare instrumento, ponto de medição, estado do circuito, tolerância e condição operacional documentada.</p></div>
+</BaseLayout>

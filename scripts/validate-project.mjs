@@ -57,7 +57,10 @@ if (/<(?:script|link)[^>]+(?:src|href)=["']https?:\/\//i.test(combined)) {
 }
 
 const sourceData = text(join(root, "src", "data", "sources.ts"));
-const claimsData = text(join(root, "src", "data", "claims.ts"));
+const claimsData = walk(join(root, "src", "data"))
+  .filter((path) => /^claims.*\.ts$/i.test(relative(join(root, "src", "data"), path)))
+  .map((path) => text(path))
+  .join("\n");
 const modulesData = text(join(root, "src", "data", "modules.ts"));
 const sourceIds = new Set([...sourceData.matchAll(/\bid:\s*"((?:SRC)-[^"]+)"/g)].map((match) => match[1]));
 const claimIds = new Set([...claimsData.matchAll(/\bid:\s*"([^"]+)"/g)].map((match) => match[1]));

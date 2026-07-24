@@ -1,0 +1,42 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import PageMeta from "../../../components/PageMeta.astro";
+import CitationCard from "../../../components/CitationCard.astro";
+import Fa150Nav from "../../../components/Fa150Nav.astro";
+import { fa150InputSentences, fa150KeySentenceFields, fa150OutputSentences, fa150PortModes, fa150SentenceIntervals, fa150TerminalMap } from "../../../data/fa150";
+---
+
+<BaseLayout title="Interfaces do Furuno FA-150" description="Portas, terminais e sentenças IEC 61162 confirmadas do FA-150." section="FA-150 · Interfaces">
+  <header class="page-header"><p class="eyebrow">COM1–COM6 · IEC 61162</p><h1>Interfaces e sentenças</h1><p class="lede">Mapa de terminais, modos de porta, prioridades e sentenças documentadas para as revisões M/P1.</p></header>
+  <PageMeta status="verificado" applicability={["FA-150", "revisões M/P1"]} sourceIds={["SRC-FUR-OME-M", "SRC-FUR-IME-P1"]} />
+  <Fa150Nav />
+  <div class="callout callout--warning"><strong>Pinagem exclusiva</strong><p>Confirme o desenho S-1 aplicável antes de conectar. A e B, H e C ou blindagem não devem ser deduzidos por cor do cabo.</p></div>
+
+  <section>
+    <h2>Portas e taxas</h2>
+    <CitationCard claimId="FA150-IO-003" /><CitationCard claimId="FA150-IO-004" />
+    <div class="table-wrap" role="region" aria-label="Modos das portas do FA-150" tabindex="0"><table class="technical-table"><caption>IME-44310-P1, PDF 31–33.</caption><thead><tr><th scope="col">Porta</th><th scope="col">Modos</th><th scope="col">Interface/taxa documentada</th></tr></thead><tbody>{fa150PortModes.map((row) => <tr><th scope="row">{row[0]}</th><td>{row[1]}</td><td>{row[2]}</td></tr>)}</tbody></table></div>
+  </section>
+
+  <section>
+    <h2>Mapa de terminais</h2>
+    <CitationCard claimId="FA150-WIRE-001" /><CitationCard claimId="FA150-WIRE-002" /><CitationCard claimId="FA150-PILOT-002" />
+    <div class="table-wrap" role="region" aria-label="Terminais do FA-150" tabindex="0"><table class="technical-table"><caption>Transcrição do diagrama S-1, IME-44310-P1, PDF 58; pilot plug também conferido no OME-44310-M, PDF 46.</caption><thead><tr><th scope="col">Bloco</th><th scope="col">Terminal</th><th scope="col">Sinal</th><th scope="col">Finalidade</th></tr></thead><tbody>{fa150TerminalMap.map((row) => <tr><th scope="row">{row[0]}</th><td>{row[1]}</td><td><code>{row[2]}</code></td><td>{row[3]}</td></tr>)}</tbody></table></div>
+  </section>
+
+  <section>
+    <h2>Sentenças aceitas e geradas</h2>
+    <CitationCard claimId="FA150-SENT-001" /><CitationCard claimId="FA150-SENT-002" />
+    <div class="card-grid">
+      <article class="card"><h3>Entradas</h3><dl>{fa150InputSentences.map((row) => <><dt><code>{row[0]}</code></dt><dd>{row[1]}</dd></>)}</dl></article>
+      <article class="card"><h3>Saídas</h3><dl>{fa150OutputSentences.map((row) => <><dt><code>{row[0]}</code></dt><dd>{row[1]}</dd></>)}</dl></article>
+    </div>
+    <div class="callout callout--danger"><strong>Dados sensíveis</strong><p>PIWWSPW transporta credencial Inland AIS. Não cole essa sentença no analisador, não registre a senha em relatório e não a armazene no navegador ou no repositório.</p></div>
+  </section>
+
+  <section>
+    <h2>Campos e ausência de dados</h2>
+    <div class="table-wrap" role="region" aria-label="Campos de sentenças essenciais do FA-150" tabindex="0"><table class="technical-table"><caption>Resumo de formato e diagnóstico baseado no apêndice 2 do OME-44310-M.</caption><thead><tr><th scope="col">Sentença</th><th scope="col">Direção/finalidade</th><th scope="col">Campos</th><th scope="col">Quando ausente</th></tr></thead><tbody>{fa150KeySentenceFields.map((item) => <tr><th scope="row">{item.id}</th><td>{item.direction} · {item.purpose}</td><td>{item.fields}</td><td>{item.absence}<br /><small>{item.source}</small></td></tr>)}</tbody></table></div>
+    <details><summary>Intervalos de saída documentados</summary><div class="table-wrap" role="region" aria-label="Intervalos de saída" tabindex="0"><table class="technical-table"><thead><tr><th scope="col">Sentença</th><th scope="col">Intervalo/evento</th></tr></thead><tbody>{fa150SentenceIntervals.map((row) => <tr><th scope="row">{row[0]}</th><td>{row[1]}</td></tr>)}</tbody></table></div></details>
+  </section>
+</BaseLayout>

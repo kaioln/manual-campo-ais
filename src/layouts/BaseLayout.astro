@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import { modules } from "../data/modules";
+import { fa150Sections } from "../data/fa150";
 import { withBase } from "../utilities/path";
 
 interface Props {
@@ -91,6 +92,12 @@ const isActive = (href: string) => {
               <span class="nav-index" aria-hidden="true">•</span><span>{link.label}</span>
             </a>
           ))}
+          <p class="nav-label">FA-150 por sistema</p>
+          {fa150Sections.slice(1).map((item, index) => (
+            <a href={withBase(item.href)} aria-current={isActive(item.href) ? "page" : undefined}>
+              <span class="nav-index">{String(index + 1).padStart(2, "0")}</span><span>{item.title}</span>
+            </a>
+          ))}
           <p class="nav-label">Conteúdo técnico</p>
           {modules.map((module) => (
             <a href={withBase(`/modulos/${module.slug}/`)} aria-current={isActive(`/modulos/${module.slug}/`) ? "page" : undefined}>
@@ -100,7 +107,7 @@ const isActive = (href: string) => {
         </nav>
         <div class="sidebar__footer">
           <span class="status-dot" aria-hidden="true"></span>
-          <span>Versão 0.1.0 · uso offline</span>
+          <span>Versão 0.2.0 · uso offline</span>
         </div>
       </aside>
 

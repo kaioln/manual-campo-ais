@@ -1,6 +1,6 @@
 # Inventário documental
 
-Data da inspeção: 2026-07-23  
+Data da inspeção: 2026-07-24
 Método: metadados OOXML/PDF, extração integral de texto, conferência visual de capas e páginas técnicas, SHA-256.
 
 | ID | Arquivo no repositório | Fabricante/autor | Tipo | Modelo | Idioma | Revisão/data | Páginas | SHA-256 | Estado |
@@ -14,6 +14,7 @@ Método: metadados OOXML/PDF, extração integral de texto, conferência visual 
 ## Duplicidades
 
 - A cópia `Downloads/drive-download-20260710T130413Z-2-001/RAT AIS Furuno FA-150.docx` tem o mesmo SHA-256 de `SRC-PRONAV-RAT` e não foi importada novamente.
+- `C:\Users\Laboratório\Downloads\RAT AIS Furuno FA-150.docx`, `POP – Manutenção de Equipamentos AIS.pdf`, `1635953498718-OME44310M_FA150.pdf` e `furuno-fa150-installation-manual.pdf` foram conferidos em 2026-07-24 e possuem os mesmos SHA-256 das quatro fontes correspondentes já preservadas no repositório.
 - O POP em PDF é uma apresentação do POP em DOCX. Ambos são preservados para rastreabilidade, mas contam como uma única origem de conteúdo.
 
 ## Observações de legibilidade
@@ -21,4 +22,3 @@ Método: metadados OOXML/PDF, extração integral de texto, conferência visual 
 - `SRC-FUR-OME-M`: a página física 119 está vazia; isso parece ser intencional.
 - `SRC-FUR-IME-P1`: a extração textual de símbolos e desenhos é parcial. Valores de pinagem, cores e interconexão devem ser confirmados visualmente na folha correspondente.
 - Os dois DOCX não puderam ser renderizados pelo conversor automatizado disponível; a estrutura OOXML, textos, tabelas, cabeçalhos, rodapés e contagem de páginas foram inspecionados. Eles não são entregáveis do projeto e não foram modificados.
-

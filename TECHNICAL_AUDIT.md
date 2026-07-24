@@ -1,6 +1,6 @@
 # Auditoria técnica
 
-Data: 2026-07-23  
+Data: 2026-07-24
 Escopo: conteúdo público, fontes, alegações, valores, interfaces, menus, procedimentos, diagramas e ferramentas.
 
 ## Resultado
@@ -10,10 +10,10 @@ Escopo: conteúdo público, fontes, alegações, valores, interfaces, menus, pro
 ## Verificações executadas
 
 - Valores publicados com unidade: 12–24 Vcc, 4800 bps, 38,4 kbps e 38400 bps aparecem com fonte, página, seção e aplicabilidade FA-150.
-- Pinagens: não há tabela genérica ou transferência entre modelos. O pilot plug é citado com referência à fonte; a folha do fabricante permanece autoridade.
+- Pinagens: terminais do FA-150 e pilot plug foram transcritos do desenho S-1 e da seção 1.12, com aviso de revisão e proibição de transferência entre modelos.
 - Cores de fios: não foram publicadas como conteúdo de campo.
 - Menus: somente caminhos presentes no manual OME-44310-M; menus protegidos são descritos sem credencial.
-- Alarmes: não foi inventado catálogo de códigos. A página explica método de triagem e registra a ausência de manual de serviço.
+- Alarmes: os 18 textos encontrados no apêndice 3 do OME-44310-M foram publicados exclusivamente para a revisão M, com significado e primeiro teste seguro.
 - Sensores: origem, interface, processamento e consumidor são tratados como fronteiras diferentes.
 - RF: nenhuma medição recebe limite presumido; carga, direção, faixa, autorização e instrumento são pré-requisitos.
 - Alimentação: alertas impedem continuidade energizada e amperímetro em paralelo.
@@ -26,9 +26,8 @@ Escopo: conteúdo público, fontes, alegações, valores, interfaces, menus, pro
 - Manual oficial de serviço e boletins de firmware não foram fornecidos.
 - Normas IEC completas não foram fornecidas; o site usa apenas resumos públicos e metadados oficiais.
 - Procedimentos de instalação, commissioning e medição permanecem como `rascunho controlado` quando dependem de documento de bordo, arranjo RF ou critérios do fabricante ausentes.
-- O catálogo de alarmes por código não é publicado até existir fonte oficial aplicável.
+- Códigos numéricos ou alarmes internos não presentes no OME-44310-M continuam como lacuna até existir fonte oficial aplicável.
 
 ## Decisão
 
 O conteúdo é adequado para treinamento, triagem e preparação de serviço autorizado. Não é suficiente, sozinho, para intervenção interna, teste RF transmissivo, atualização de firmware ou alteração protegida.
-

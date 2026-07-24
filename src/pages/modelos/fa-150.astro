@@ -2,56 +2,64 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PageMeta from "../../components/PageMeta.astro";
 import CitationCard from "../../components/CitationCard.astro";
+import Fa150Nav from "../../components/Fa150Nav.astro";
+import { fa150Controls, fa150Units } from "../../data/fa150";
 import { withBase } from "../../utilities/path";
 ---
 
-<BaseLayout title="Furuno FA-150" description="Central técnica rastreável do Furuno FA-150." section="Modelos">
+<BaseLayout title="Furuno FA-150" description="Dossiê técnico rastreável do Furuno FA-150." section="Furuno FA-150">
   <header class="page-header">
     <p class="eyebrow">Equipamento principal · exclusivo deste modelo</p>
     <h1>Furuno FA-150</h1>
-    <p class="lede">Unidades, fluxo de dados, telas, interfaces e diagnóstico confirmados nos manuais OME-44310-M e IME-44310-P1.</p>
+    <p class="lede">Uma central de consulta por sistema: instalação, interfaces, menus, diagnósticos, alarmes e especificações confirmadas nas revisões M e P1.</p>
   </header>
   <PageMeta status="verificado" applicability={["Furuno FA-150", "FA-1501", "FA-1502", "revisões M/P1"]} sourceIds={["SRC-FUR-OME-M", "SRC-FUR-IME-P1"]} />
+  <Fa150Nav />
 
   <div class="callout callout--warning">
     <strong>Barreira de modelo</strong>
-    <p>Nenhuma pinagem, cor, menu, firmware ou sequência desta página é aplicável automaticamente ao FA-100, FA-170, FA-50, FA-70 ou FA-40.</p>
+    <p>Não transfira pinagem, menu, firmware ou procedimento desta seção para FA-100, FA-170, FA-50, FA-70, FA-40 ou outro AIS.</p>
   </div>
 
   <section class="content-section">
-    <h2>Composição confirmada</h2>
-    <CitationCard claimId="FA150-SYS-001" />
-    <CitationCard claimId="FA150-SYS-002" />
-    <CitationCard claimId="FA150-PWR-001" />
-  </section>
-
-  <section class="content-section">
-    <h2>Arquitetura e interconexão</h2>
+    <h2>Arquitetura confirmada</h2>
+    <CitationCard claimId="FA150-SYS-003" />
     <figure class="diagram" tabindex="0" role="region" aria-label="Diagrama funcional do sistema Furuno FA-150">
-      <img src={withBase("/diagrams/fa150-arquitetura.svg")} alt="Diagrama funcional do FA-150 com antenas, transponder, monitor, sensores e consumidores." />
-      <figcaption>Diagrama original elaborado com base no manual de instalação IME-44310-P1, PDF 4–5 e 21–22. Não representa pinagem.</figcaption>
-      <a class="diagram__open" href={withBase("/diagrams/fa150-arquitetura.svg")} target="_blank" rel="noopener">Abrir diagrama em tamanho integral</a>
+      <img src={withBase("/diagrams/fa150-arquitetura.svg")} alt="Antenas, transponder, monitor, sensores e consumidores do FA-150." />
+      <figcaption>Diagrama original baseado no IME-44310-P1, PDF 4–5, 21–22 e 58. Não substitui o desenho de interconexão aplicável.</figcaption>
+      <a class="diagram__open" href={withBase("/diagrams/fa150-arquitetura.svg")} target="_blank" rel="noopener">Abrir diagrama integral</a>
     </figure>
   </section>
 
-  <section class="content-section">
-    <h2>Interfaces documentadas</h2>
-    <CitationCard claimId="FA150-IO-001" />
-    <CitationCard claimId="FA150-IO-002" />
-    <CitationCard claimId="FA150-PILOT-001" />
-    <p>A pinagem completa permanece no desenho do fabricante. O site evita transcrevê-la fora do contexto da folha porque uma inversão, revisão ou transferência de modelo pode produzir falha.</p>
+  <section>
+    <h2>Unidades do sistema</h2>
+    <div class="table-wrap" role="region" aria-label="Unidades documentadas do Furuno FA-150" tabindex="0">
+      <table class="technical-table">
+        <caption>Composição encontrada nos manuais OME-44310-M e IME-44310-P1.</caption>
+        <thead><tr><th scope="col">Código</th><th scope="col">Unidade</th><th scope="col">Função e limite</th></tr></thead>
+        <tbody>{fa150Units.map((row) => <tr><th scope="row">{row[0]}</th><td>{row[1]}</td><td>{row[2]}</td></tr>)}</tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Controles do monitor FA-1502</h2>
+    <CitationCard claimId="FA150-CTRL-001" />
+    <div class="table-wrap" role="region" aria-label="Controles do monitor FA-1502" tabindex="0">
+      <table class="technical-table">
+        <caption>Funções resumidas da seção 1.1 do manual de operação, PDF 12.</caption>
+        <thead><tr><th scope="col">Controle</th><th scope="col">Finalidade</th></tr></thead>
+        <tbody>{fa150Controls.map((row) => <tr><th scope="row">{row[0]}</th><td>{row[1]}</td></tr>)}</tbody>
+      </table>
+    </div>
   </section>
 
   <section class="content-section">
-    <h2>Diagnóstico de primeiro nível</h2>
-    <CitationCard claimId="FA150-DIAG-001" />
-    <CitationCard claimId="FA150-DIAG-002" />
-    <CitationCard claimId="FA150-SENS-001" />
-  </section>
-
-  <section class="content-section">
-    <h2>Acesso e restauração</h2>
-    <CitationCard claimId="FA150-ACCESS-001" />
-    <CitationCard claimId="FA150-RESET-001" />
+    <h2>Comece pela tarefa</h2>
+    <ol>
+      <li>Confirme placa de identificação, unidade, revisão documental e autorização.</li>
+      <li>Escolha a seção específica acima; não use uma tela de alvos como prova isolada de transmissão.</li>
+      <li>Registre estado inicial, resultados e alterações antes de devolver o sistema ao passadiço.</li>
+    </ol>
   </section>
 </BaseLayout>

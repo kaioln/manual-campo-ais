@@ -1,4 +1,5 @@
 import type { Claim } from "./types";
+import { fa150Claims } from "./claimsFa150";
 
 export const claims: Claim[] = [
   {
@@ -191,8 +192,8 @@ export const claims: Claim[] = [
     classification: "PROCEDIMENTO GERAL",
     confidence: "Média",
     applicability: "Serviço autorizado"
-  }
+  },
+  ...fa150Claims
 ];
 
 export const claimById = Object.fromEntries(claims.map((claim) => [claim.id, claim]));
-

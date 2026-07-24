@@ -1,0 +1,23 @@
+---
+import { fa150Sections } from "../data/fa150";
+import { withBase } from "../utilities/path";
+
+const currentPath = Astro.url.pathname.endsWith("/") ? Astro.url.pathname : `${Astro.url.pathname}/`;
+---
+
+<nav class="subsection-nav" aria-label="Seções técnicas do Furuno FA-150">
+  <p class="subsection-nav__label">Dossiê técnico FA-150</p>
+  <div class="subsection-nav__grid">
+    {fa150Sections.map((item) => {
+      const href = withBase(item.href);
+      const normalized = href.endsWith("/") ? href : `${href}/`;
+      const active = currentPath === normalized;
+      return (
+        <a class="subsection-nav__item" href={href} aria-current={active ? "page" : undefined}>
+          <strong>{item.title}</strong>
+          <span>{item.description}</span>
+        </a>
+      );
+    })}
+  </div>
+</nav>

@@ -1,0 +1,46 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import PageMeta from "../../../components/PageMeta.astro";
+import CitationCard from "../../../components/CitationCard.astro";
+import Fa150Nav from "../../../components/Fa150Nav.astro";
+import { fa150Alarms } from "../../../data/fa150";
+const categories = [...new Set(fa150Alarms.map((item) => item[1]))];
+---
+
+<BaseLayout title="Alarmes do Furuno FA-150" description="Catálogo pesquisável de alarmes exclusivos do FA-150." section="FA-150 · Alarmes">
+  <header class="page-header"><p class="eyebrow">Apêndice 3 · revisão M</p><h1>Alarmes do FA-150</h1><p class="lede">Significado e primeiro teste seguro, sem misturar mensagens de outros modelos.</p></header>
+  <PageMeta status="verificado" applicability={["FA-150", "revisão M"]} sourceIds={["SRC-FUR-OME-M"]} />
+  <Fa150Nav />
+  <CitationCard claimId="FA150-ALARM-001" /><CitationCard claimId="FA150-ALARM-002" />
+  <div class="filter-bar no-print">
+    <label>Pesquisar alarme<input id="alarm-query" type="search" placeholder="Ex.: heading, VSWR, GNSS" /></label>
+    <label>Categoria<select id="alarm-category"><option value="">Todas</option>{categories.map((category) => <option value={category}>{category}</option>)}</select></label>
+  </div>
+  <p id="alarm-count" class="meta-label" aria-live="polite">{fa150Alarms.length} alarmes exibidos</p>
+
+  <section>
+    <h2>Catálogo</h2>
+    <div class="table-wrap" role="region" aria-label="Alarmes do Furuno FA-150" tabindex="0">
+      <table class="technical-table" id="alarm-table"><caption>OME-44310-M, PDF 110–111. Ações resumidas não substituem o manual.</caption><thead><tr><th scope="col">Alarme</th><th scope="col">Categoria</th><th scope="col">Prioridade</th><th scope="col">Significado</th><th scope="col">Próximo teste</th></tr></thead><tbody>{fa150Alarms.map((row) => <tr data-category={row[1]} data-search={row.join(" ").toLowerCase()}><th scope="row">{row[0]}</th><td>{row[1]}</td><td>{row[2]}</td><td>{row[3]}</td><td>{row[4]}</td></tr>)}</tbody></table>
+    </div>
+  </section>
+  <script>
+    const query = document.querySelector<HTMLInputElement>("#alarm-query");
+    const category = document.querySelector<HTMLSelectElement>("#alarm-category");
+    const rows = [...document.querySelectorAll<HTMLTableRowElement>("#alarm-table tbody tr")];
+    const count = document.querySelector("#alarm-count");
+    const update = () => {
+      const term = query?.value.trim().toLocaleLowerCase("pt-BR") || "";
+      const selected = category?.value || "";
+      let visible = 0;
+      rows.forEach((row) => {
+        const matches = (!term || row.dataset.search?.includes(term)) && (!selected || row.dataset.category === selected);
+        row.hidden = !matches;
+        if (matches) visible++;
+      });
+      if (count) count.textContent = `${visible} ${visible === 1 ? "alarme exibido" : "alarmes exibidos"}`;
+    };
+    query?.addEventListener("input", update);
+    category?.addEventListener("change", update);
+  </script>
+</BaseLayout>

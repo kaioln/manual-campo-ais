@@ -1,0 +1,32 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import PageMeta from "../../../components/PageMeta.astro";
+import CitationCard from "../../../components/CitationCard.astro";
+import Fa150Nav from "../../../components/Fa150Nav.astro";
+import { fa150Diagnostics, fa150SensorStatuses } from "../../../data/fa150";
+---
+
+<BaseLayout title="Diagnósticos do Furuno FA-150" description="Testes internos, históricos e estados de sensores do FA-150." section="FA-150 · Diagnósticos">
+  <header class="page-header"><p class="eyebrow">Testes internos · evidência antes da troca</p><h1>Diagnósticos</h1><p class="lede">O que cada teste verifica, suas limitações e a próxima ação segura.</p></header>
+  <PageMeta status="verificado" applicability={["FA-150", "FA-1501", "FA-1502", "revisão M"]} sourceIds={["SRC-FUR-OME-M"]} />
+  <Fa150Nav />
+  <CitationCard claimId="FA150-DIAG-003" /><CitationCard claimId="FA150-DIAG-004" /><CitationCard claimId="FA150-DIAG-005" />
+
+  <section>
+    <h2>Testes e históricos</h2>
+    <div class="card-grid">{fa150Diagnostics.map((item) => <article class="card technical-card"><small>{item.path}</small><h3>{item.test}</h3><p><strong>Verifica:</strong> {item.checks}</p><p><strong>Resultado:</strong> {item.result}</p><p><strong>Próxima ação:</strong> {item.action}</p><p class="card__footer">{item.source}</p></article>)}</div>
+    <div class="callout callout--warning"><strong>Limitação do teste VHF</strong><p>NG pode ocorrer por obstrução, TX MALFUNCTION, primeiro minuto após a partida ou região sem transmissão. Execute somente com autorização e não condene o transponder por esse resultado isolado.</p></div>
+  </section>
+
+  <section>
+    <h2>Sensor status</h2>
+    <CitationCard claimId="FA150-SENS-002" />
+    <div class="table-wrap" role="region" aria-label="Estados de sensores do FA-150" tabindex="0"><table class="technical-table"><caption>Mensagens da tela SENSOR STATUS, OME-44310-M, PDF 82.</caption><thead><tr><th scope="col">Estado</th><th scope="col">Interpretação</th></tr></thead><tbody>{fa150SensorStatuses.map((row) => <tr><th scope="row">{row[0]}</th><td>{row[1]}</td></tr>)}</tbody></table></div>
+  </section>
+
+  <section class="content-section">
+    <h2>Limpeza e retorno</h2>
+    <CitationCard claimId="FA150-RESET-002" />
+    <p>Preserve históricos e configurações antes de MONITOR CLEAR, SET USER DEFAULT ou GPS COLD START. Essas opções têm efeitos distintos; limpeza não substitui diagnóstico da causa.</p>
+  </section>
+</BaseLayout>

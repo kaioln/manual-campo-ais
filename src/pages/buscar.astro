@@ -9,6 +9,16 @@ import { practicalCases } from "../data/practicalCases";
 import { trainingTrails } from "../data/training";
 import { reportTemplates } from "../data/reportTemplates";
 import { claims } from "../data/claims";
+import {
+  fa150Alarms,
+  fa150Diagnostics,
+  fa150InputSentences,
+  fa150MenuGroups,
+  fa150OutputSentences,
+  fa150Sections,
+  fa150Specifications,
+  fa150TerminalMap
+} from "../data/fa150";
 import { withBase } from "../utilities/path";
 
 const synonyms: Record<string, string[]> = {
@@ -25,6 +35,25 @@ const synonyms: Record<string, string[]> = {
 };
 
 const searchIndex = [
+  ...fa150Sections.map((item) => {
+    const relatedText = item.href.endsWith("/interfaces/")
+      ? [...fa150TerminalMap.flat(), ...fa150InputSentences.flat(), ...fa150OutputSentences.flat()].join(" ")
+      : item.href.endsWith("/menus/")
+        ? fa150MenuGroups.flatMap((group) => [group.name, group.access, group.impact, ...group.branches]).join(" ")
+        : item.href.endsWith("/diagnosticos/")
+          ? fa150Diagnostics.flatMap((entry) => Object.values(entry)).join(" ")
+          : item.href.endsWith("/alarmes/")
+            ? fa150Alarms.flat().join(" ")
+            : item.href.endsWith("/especificacoes/")
+              ? fa150Specifications.flat().join(" ")
+              : "Furuno FA-150 FA-1501 FA-1502 instalação antena alimentação unidades";
+    return {
+      title: `FA-150 · ${item.title}`,
+      href: withBase(item.href),
+      type: "FA-150",
+      text: `${item.description} ${relatedText}`
+    };
+  }),
   ...modules.map((item) => ({
     title: item.title,
     href: withBase(`/modulos/${item.slug}/`),
