@@ -1,4 +1,4 @@
-const CACHE = "manual-ais-v0.2.0";
+const CACHE = "manual-ais-v0.2.0-search-spacing";
 const scoped = (path) => new URL(path, self.registration.scope).href;
 const CORE = [
   "",
