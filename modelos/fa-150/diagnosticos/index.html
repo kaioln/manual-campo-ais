@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="Testes internos, históricos e estados de sensores do FA-150."><meta name="theme-color" content="#092533"><meta name="color-scheme" content="light dark"><link rel="canonical" href="https://kaioln.github.io/manual-campo-ais/modelos/fa-150/diagnosticos/"><link rel="icon" href="/manual-campo-ais/icons/favicon.svg" type="image/svg+xml"><link rel="manifest" href="/manual-campo-ais/manifest.webmanifest"><title>Diagnósticos do Furuno FA-150 · Manual de Campo AIS</title><script>
+      (() => {
+        const saved = localStorage.getItem("ais-theme");
+        const theme = saved || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script><link rel="stylesheet" href="/manual-campo-ais/_astro/BaseLayout.MoQFMc3y.css"></head><body><a class="skip-link" href="#conteudo">Pular para o conteúdo</a><div class="reading-progress" aria-hidden="true"><span></span></div><header class="topbar"><button class="nav-toggle" type="button" aria-label="Abrir navegação" aria-controls="site-navigation" aria-expanded="false"><span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></button><a class="brand" href="/manual-campo-ais/" aria-label="Manual de Campo AIS — início"><span class="brand__mark" aria-hidden="true">AIS</span><span class="brand__text"><strong>Manual de Campo</strong><small>treinamento e consulta técnica</small></span></a><form class="search-compact" action="/manual-campo-ais/buscar/" role="search"><label class="sr-only" for="q-global">Pesquisar em todo o manual</label><span class="search-compact__icon" aria-hidden="true"></span><input id="q-global" name="q" type="search" placeholder="Pesquisar sintoma, modelo ou sentença" autocomplete="off"><kbd aria-hidden="true">/</kbd><button type="submit">Pesquisar</button></form><button class="theme-toggle" type="button" aria-label="Alternar para modo escuro" aria-pressed="false"><span aria-hidden="true">◑</span><span class="theme-toggle__label">Tema</span></button></header><div class="shell"><button class="nav-backdrop" type="button" aria-label="Fechar navegação" tabindex="-1"></button><aside id="site-navigation" class="sidebar" aria-label="Navegação principal"><div class="sidebar__heading"><span>Manual técnico</span><button class="nav-close" type="button" aria-label="Fechar navegação">×</button></div><nav class="desktop-nav"><p class="nav-label">Consulta rápida</p><a href="/manual-campo-ais/"><span class="nav-index" aria-hidden="true">•</span><span>Visão geral</span></a><a href="/manual-campo-ais/modelos/fa-150/"><span class="nav-index" aria-hidden="true">•</span><span>Furuno FA-150</span></a><a href="/manual-campo-ais/diagnostico/"><span class="nav-index" aria-hidden="true">•</span><span>Diagnóstico</span></a><a href="/manual-campo-ais/ferramentas/analisador/"><span class="nav-index" aria-hidden="true">•</span><span>Analisador de sentenças</span></a><a href="/manual-campo-ais/checklists/"><span class="nav-index" aria-hidden="true">•</span><span>Checklists</span></a><a href="/manual-campo-ais/casos/"><span class="nav-index" aria-hidden="true">•</span><span>Casos práticos</span></a><a href="/manual-campo-ais/relatorios/"><span class="nav-index" aria-hidden="true">•</span><span>Modelos de relatório</span></a><a href="/manual-campo-ais/glossario/"><span class="nav-index" aria-hidden="true">•</span><span>Glossário</span></a><a href="/manual-campo-ais/treinamento/"><span class="nav-index" aria-hidden="true">•</span><span>Treinamento</span></a><a href="/manual-campo-ais/fontes/"><span class="nav-index" aria-hidden="true">•</span><span>Fontes e rastreabilidade</span></a><p class="nav-label">FA-150 por sistema</p><a href="/manual-campo-ais/modelos/fa-150/instalacao/"><span class="nav-index">01</span><span>Instalação</span></a><a href="/manual-campo-ais/modelos/fa-150/interfaces/"><span class="nav-index">02</span><span>Interfaces</span></a><a href="/manual-campo-ais/modelos/fa-150/menus/"><span class="nav-index">03</span><span>Menus e ajustes</span></a><a href="/manual-campo-ais/modelos/fa-150/diagnosticos/" aria-current="page"><span class="nav-index">04</span><span>Diagnósticos</span></a><a href="/manual-campo-ais/modelos/fa-150/alarmes/"><span class="nav-index">05</span><span>Alarmes</span></a><a href="/manual-campo-ais/modelos/fa-150/especificacoes/"><span class="nav-index">06</span><span>Especificações</span></a><p class="nav-label">Conteúdo técnico</p><a href="/manual-campo-ais/modulos/fundamentos-ais/"><span class="nav-index">01</span><span>Fundamentos do AIS</span></a><a href="/manual-campo-ais/modulos/dados-transmitidos-recebidos/"><span class="nav-index">02</span><span>Dados transmitidos e recebidos</span></a><a href="/manual-campo-ais/modulos/arquitetura-classe-a/"><span class="nav-index">03</span><span>Arquitetura de um AIS Classe A</span></a><a href="/manual-campo-ais/modulos/furuno-fa-150/"><span class="nav-index">04</span><span>Furuno FA-150</span></a><a href="/manual-campo-ais/modulos/outros-modelos/"><span class="nav-index">05</span><span>Outros modelos</span></a><a href="/manual-campo-ais/modulos/sensores-integracao/"><span class="nav-index">06</span><span>Sensores e equipamentos integrados</span></a><a href="/manual-campo-ais/modulos/iec-61162-nmea-rs422/"><span class="nav-index">07</span><span>IEC 61162, NMEA 0183 e comunicação diferencial</span></a><a href="/manual-campo-ais/modulos/instalacao/"><span class="nav-index">08</span><span>Instalação autorizada</span></a><a href="/manual-campo-ais/modulos/commissioning/"><span class="nav-index">09</span><span>Commissioning</span></a><a href="/manual-campo-ais/modulos/diagnostico-troubleshooting/"><span class="nav-index">10</span><span>Diagnóstico e troubleshooting</span></a><a href="/manual-campo-ais/modulos/medicoes-instrumentos/"><span class="nav-index">11</span><span>Medições e instrumentos</span></a><a href="/manual-campo-ais/modulos/alarmes-eventos/"><span class="nav-index">12</span><span>Alarmes e eventos</span></a><a href="/manual-campo-ais/modulos/procedimentos-bordo/"><span class="nav-index">13</span><span>Procedimentos de bordo</span></a><a href="/manual-campo-ais/modulos/seguranca-operacional/"><span class="nav-index">14</span><span>Segurança operacional</span></a><a href="/manual-campo-ais/modulos/casos-praticos/"><span class="nav-index">15</span><span>Casos práticos</span></a><a href="/manual-campo-ais/modulos/checklists/"><span class="nav-index">16</span><span>Checklists</span></a><a href="/manual-campo-ais/modulos/treinamento/"><span class="nav-index">17</span><span>Trilhas de treinamento</span></a></nav><div class="sidebar__footer"><span class="status-dot" aria-hidden="true"></span><span>Versão 0.2.0 · uso offline</span></div></aside><main id="conteudo" class="main"><div class="content-frame"><nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/manual-campo-ais/">Início</a><span aria-hidden="true">›</span><span aria-current="page">FA-150 · Diagnósticos</span></nav><header class="page-header"><p class="eyebrow">Testes internos · evidência antes da troca</p><h1>Diagnósticos</h1><p class="lede">O que cada teste verifica, suas limitações e a próxima ação segura.</p></header><section class="page-meta" aria-label="Controle do conteúdo"><div><span class="meta-label">Status</span><strong class="status-chip status-chip--verificado">verificado</strong></div><div><span class="meta-label">Última revisão</span><strong>24 jul. 2026</strong></div><div><span class="meta-label">Aplicabilidade</span><strong>FA-150 · FA-1501 · FA-1502 · revisão M</strong></div><div><span class="meta-label">Responsável</span><strong>Revisão técnica do projeto</strong></div><div class="page-meta__sources"><span class="meta-label">Documentos utilizados</span><ul><li>OME-44310-M, revisão M</li></ul></div></section><nav class="subsection-nav" aria-label="Seções técnicas do Furuno FA-150"><p class="subsection-nav__label">Dossiê técnico FA-150</p><div class="subsection-nav__grid"><a class="subsection-nav__item" href="/manual-campo-ais/modelos/fa-150/"><strong>Visão geral</strong><span>Unidades, limites documentais e acesso rápido.</span></a><a class="subsection-nav__item" href="/manual-campo-ais/modelos/fa-150/instalacao/"><strong>Instalação</strong><span>Montagem, antenas, alimentação, proteção e cabos.</span></a><a class="subsection-nav__item" href="/manual-campo-ais/modelos/fa-150/interfaces/"><strong>Interfaces</strong><span>COM1-COM6, terminais, pilot plug e sentenças IEC 61162.</span></a><a class="subsection-nav__item" href="/manual-campo-ais/modelos/fa-150/menus/"><strong>Menus e ajustes</strong><span>Árvore documentada, permissões, faixas e impacto.</span></a><a class="subsection-nav__item" href="/manual-campo-ais/modelos/fa-150/diagnosticos/" aria-current="page"><strong>Diagnósticos</strong><span>Testes internos, históricos, sensores e restauração.</span></a><a class="subsection-nav__item" href="/manual-campo-ais/modelos/fa-150/alarmes/"><strong>Alarmes</strong><span>Catálogo exclusivo da revisão M e próximo teste seguro.</span></a><a class="subsection-nav__item" href="/manual-campo-ais/modelos/fa-150/especificacoes/"><strong>Especificações</strong><span>RF, GNSS, energia, ambiente e proteção.</span></a></div></nav><article class="citation-card" data-claim-id="FA150-DIAG-003" aria-labelledby="alegacao-fa150-diag-003-titulo"><div class="citation-card__top"><span class="evidence-badge evidence-badge--exclusivo-deste-modelo">EXCLUSIVO DESTE MODELO</span><code>FA150-DIAG-003</code></div><p id="alegacao-fa150-diag-003-titulo">MONITOR TEST mostra versões e verifica ROM, SDRAM, porta, teclas, contraste, dimmer e LCD.</p><dl class="citation-meta"><div><dt>Fonte</dt><dd>U-AIS Transponder Model FA-150 — Operator&#39;s Manual</dd></div><div><dt>Referência</dt><dd>PDF 76-77; 3.4.1 Monitor unit test</dd></div><div><dt>Confiança</dt><dd>Alta</dd></div><div><dt>Aplicabilidade</dt><dd>Furuno FA-1502</dd></div></dl></article><article class="citation-card" data-claim-id="FA150-DIAG-004" aria-labelledby="alegacao-fa150-diag-004-titulo"><div class="citation-card__top"><span class="evidence-badge evidence-badge--exclusivo-deste-modelo">EXCLUSIVO DESTE MODELO</span><code>FA150-DIAG-004</code></div><p id="alegacao-fa150-diag-004-titulo">TRANSPONDER TEST oferece testes de memória, GNSS interno e comunicação VHF, cada um com resultados e limitações documentadas.</p><dl class="citation-meta"><div><dt>Fonte</dt><dd>U-AIS Transponder Model FA-150 — Operator&#39;s Manual</dd></div><div><dt>Referência</dt><dd>PDF 78-79; 3.4.2 Transponder test</dd></div><div><dt>Confiança</dt><dd>Alta</dd></div><div><dt>Aplicabilidade</dt><dd>Furuno FA-1501</dd></div></dl></article><article class="citation-card" data-claim-id="FA150-DIAG-005" aria-labelledby="alegacao-fa150-diag-005-titulo"><div class="citation-card__top"><span class="evidence-badge evidence-badge--exclusivo-deste-modelo">EXCLUSIVO DESTE MODELO</span><code>FA150-DIAG-005</code></div><p id="alegacao-fa150-diag-005-titulo">TX ON/OFF HISTORY mostra os 30 eventos recentes de transmissão ligada e desligada.</p><dl class="citation-meta"><div><dt>Fonte</dt><dd>U-AIS Transponder Model FA-150 — Operator&#39;s Manual</dd></div><div><dt>Referência</dt><dd>PDF 80; 3.4.4 TX on/off history</dd></div><div><dt>Confiança</dt><dd>Alta</dd></div><div><dt>Aplicabilidade</dt><dd>Furuno FA-150</dd></div></dl></article><section><h2>Testes e históricos</h2><div class="card-grid"><article class="card technical-card"><small>MENU → DIAGNOSTICS → MONITOR TEST</small><h3>Monitor test</h3><p><strong>Verifica:</strong> Números de boot/programa, ROM, SDRAM, porta, teclas, contraste, dimmer e LCD preto/branco.</p><p><strong>Resultado:</strong> ROM/SDRAM: OK ou NG. PORT pode indicar NG sem o conector especial de teste.</p><p><strong>Próxima ação:</strong> Se NG persistir após repetição, o manual orienta contatar o representante.</p><p class="card__footer">OME-44310-M, PDF 76-77, 3.4.1</p></article><article class="card technical-card"><small>MENU → DIAGNOSTICS → TRANSPONDER TEST → MEMORY TEST</small><h3>Memory test do transponder</h3><p><strong>Verifica:</strong> Programa, MAIN ROM, MAIN RAM, SUB RAM e versões de hardware MAIN/MOT/TX.</p><p><strong>Resultado:</strong> OK ou NG por memória.</p><p><strong>Próxima ação:</strong> NG deve ser escalado ao representante.</p><p class="card__footer">OME-44310-M, PDF 78, 3.4.2</p></article><article class="card technical-card"><small>MENU → DIAGNOSTICS → TRANSPONDER TEST → GPS TEST</small><h3>GPS test</h3><p><strong>Verifica:</strong> Programa e receptor GNSS interno.</p><p><strong>Resultado:</strong> OK ou NG com motivo: backup, comunicação, parâmetros, ROM, RAM ou antena.</p><p><strong>Próxima ação:</strong> Correlacionar com INTERNAL GPS e SENSOR STATUS antes de substituir componentes.</p><p class="card__footer">OME-44310-M, PDF 78, 3.4.2</p></article><article class="card technical-card"><small>MENU → DIAGNOSTICS → TRANSPONDER TEST → VHF COMM TEST</small><h3>VHF communication test</h3><p><strong>Verifica:</strong> Comunicação com MMSI selecionado automaticamente a 15-25 NM ou inserido manualmente.</p><p><strong>Resultado:</strong> OK ou NG; NG também pode ocorrer por obstrução, TX MALFUNCTION, teste no primeiro minuto ou área sem transmissão.</p><p><strong>Próxima ação:</strong> Executar somente autorizado; não interpretar NG isoladamente como defeito do transponder.</p><p class="card__footer">OME-44310-M, PDF 79, 3.4.2</p></article><article class="card technical-card"><small>MENU → DIAGNOSTICS → PWR ON/OFF HISTORY</small><h3>Power on/off history</h3><p><strong>Verifica:</strong> 30 eventos recentes de energização/desenergização.</p><p><strong>Resultado:</strong> Intervalos menores que 15 minutos não aparecem.</p><p><strong>Próxima ação:</strong> Preservar como evidência antes de qualquer limpeza.</p><p class="card__footer">OME-44310-M, PDF 80, 3.4.3</p></article><article class="card technical-card"><small>MENU → DIAGNOSTICS → TX ON/OFF HISTORY</small><h3>TX on/off history</h3><p><strong>Verifica:</strong> 30 eventos recentes de transmissão ligada/desligada.</p><p><strong>Resultado:</strong> Data e hora dos eventos.</p><p><strong>Próxima ação:</strong> Comparar com alarmes, perda de energia e relatos do passadiço.</p><p class="card__footer">OME-44310-M, PDF 80, 3.4.4</p></article></div><div class="callout callout--warning"><strong>Limitação do teste VHF</strong><p>NG pode ocorrer por obstrução, TX MALFUNCTION, primeiro minuto após a partida ou região sem transmissão. Execute somente com autorização e não condene o transponder por esse resultado isolado.</p></div></section><section><h2>Sensor status</h2><article class="citation-card" data-claim-id="FA150-SENS-002" aria-labelledby="alegacao-fa150-sens-002-titulo"><div class="citation-card__top"><span class="evidence-badge evidence-badge--exclusivo-deste-modelo">EXCLUSIVO DESTE MODELO</span><code>FA150-SENS-002</code></div><p id="alegacao-fa150-sens-002-titulo">SENSOR STATUS distingue fontes GNSS/SOG/COG internas e externas e informa validade de heading e ROT.</p><dl class="citation-meta"><div><dt>Fonte</dt><dd>U-AIS Transponder Model FA-150 — Operator&#39;s Manual</dd></div><div><dt>Referência</dt><dd>PDF 82; 3.7 Displaying Sensor Status</dd></div><div><dt>Confiança</dt><dd>Alta</dd></div><div><dt>Aplicabilidade</dt><dd>Furuno FA-150</dd></div></dl></article><div class="table-wrap" role="region" aria-label="Estados de sensores do FA-150" tabindex="0"><table class="technical-table"><caption>Mensagens da tela SENSOR STATUS, OME-44310-M, PDF 82.</caption><thead><tr><th scope="col">Estado</th><th scope="col">Interpretação</th></tr></thead><tbody><tr><th scope="row">CH MANAGEMENT</th><td>Canal alterado; indicação por aproximadamente 30 s</td></tr><tr><th scope="row">EXT DGNSS</th><td>DGNSS externo em uso</td></tr><tr><th scope="row">EXT GNSS</th><td>GNSS externo em uso</td></tr><tr><th scope="row">EXT SOG/COG</th><td>SOG/COG externos em uso</td></tr><tr><th scope="row">HDG VALID</th><td>Heading normal</td></tr><tr><th scope="row">INT DGNSS BEACON</th><td>Beacon DGNSS interno em uso</td></tr><tr><th scope="row">INT DGNSS MSG 17</th><td>Mensagem 17 corrigindo o GNSS interno</td></tr><tr><th scope="row">INT GNSS</th><td>GNSS interno em uso</td></tr><tr><th scope="row">INT SOG/COG</th><td>SOG/COG internos em uso</td></tr><tr><th scope="row">OTHER ROT</th><td>ROT calculado de HDT ou dispositivo ROT com talker diferente de TI</td></tr><tr><th scope="row">ROT VALID</th><td>ROT normal</td></tr></tbody></table></div></section><section class="content-section"><h2>Limpeza e retorno</h2><article class="citation-card" data-claim-id="FA150-RESET-002" aria-labelledby="alegacao-fa150-reset-002-titulo"><div class="citation-card__top"><span class="evidence-badge evidence-badge--exclusivo-deste-modelo">EXCLUSIVO DESTE MODELO</span><code>FA150-RESET-002</code></div><p id="alegacao-fa150-reset-002-titulo">MEMORY CLEAR separa MONITOR CLEAR, SET USER DEFAULT e GPS COLD START, com efeitos distintos e reinício em duas opções.</p><dl class="citation-meta"><div><dt>Fonte</dt><dd>U-AIS Transponder Model FA-150 — Operator&#39;s Manual</dd></div><div><dt>Referência</dt><dd>PDF 82-83; 3.8 Restoring Default Settings</dd></div><div><dt>Confiança</dt><dd>Alta</dd></div><div><dt>Aplicabilidade</dt><dd>Furuno FA-150</dd></div></dl><p class="citation-note">Executar somente com autorização, registro e plano de retorno.</p></article><p>Preserve históricos e configurações antes de MONITOR CLEAR, SET USER DEFAULT ou GPS COLD START. Essas opções têm efeitos distintos; limpeza não substitui diagnóstico da causa.</p></section></div></main><aside class="page-rail" aria-label="Navegação desta página"><div class="rail-card"><p class="rail-label">Nesta página</p><nav id="page-toc" aria-label="Índice da página"></nav></div><div class="rail-note"><strong>Barreira de segurança</strong><p>Confirme modelo, revisão e autorização antes de qualquer intervenção.</p></div></aside></div><footer class="site-footer"><p><strong>Uso autorizado.</strong> Não substitui manual aplicável, procedimento de bordo, norma, julgamento do oficial ou autorização do fabricante.</p><nav aria-label="Rodapé"><a href="/manual-campo-ais/acesso-tecnico/">Acesso técnico</a><a href="/manual-campo-ais/o-que-mudou/">O que mudou</a><a href="/manual-campo-ais/offline/">Uso offline</a></nav></footer><script>(function(){const serviceWorkerPath = "/manual-campo-ais/sw.js";
+const isProduction = true;
+
+      const root = document.documentElement;
+      const toggle = document.querySelector(".theme-toggle");
+      const syncTheme = () => {
+        const dark = root.dataset.theme === "dark";
+        toggle?.setAttribute("aria-pressed", String(dark));
+        toggle?.setAttribute("aria-label", dark ? "Alternar para modo claro" : "Alternar para modo escuro");
+      };
+      toggle?.addEventListener("click", () => {
+        const next = root.dataset.theme === "dark" ? "light" : "dark";
+        root.dataset.theme = next;
+        localStorage.setItem("ais-theme", next);
+        syncTheme();
+      });
+      syncTheme();
+
+      const navToggle = document.querySelector(".nav-toggle");
+      const navClose = document.querySelector(".nav-close");
+      const navBackdrop = document.querySelector(".nav-backdrop");
+      const sidebar = document.querySelector(".sidebar");
+      const inertTargets = [
+        document.querySelector(".main"),
+        document.querySelector(".page-rail"),
+        document.querySelector(".site-footer"),
+        document.querySelector(".topbar .brand"),
+        document.querySelector(".search-compact"),
+        document.querySelector(".theme-toggle")
+      ].filter(Boolean);
+      let focusBeforeNav = null;
+      const setNav = (open, restoreFocus = true) => {
+        if (open) focusBeforeNav = document.activeElement;
+        document.body.classList.toggle("nav-open", open);
+        navToggle?.setAttribute("aria-expanded", String(open));
+        inertTargets.forEach((element) => { element.inert = open; });
+        if (open) {
+          sidebar?.scrollTo({ top: 0 });
+          navClose?.focus();
+        }
+        else if (restoreFocus && focusBeforeNav instanceof HTMLElement) focusBeforeNav.focus();
+      };
+      navToggle?.addEventListener("click", () => setNav(true));
+      navClose?.addEventListener("click", () => setNav(false));
+      navBackdrop?.addEventListener("click", () => setNav(false));
+      document.querySelectorAll(".sidebar a").forEach((link) => link.addEventListener("click", () => setNav(false, false)));
+      addEventListener("keydown", (event) => {
+        if (event.key === "Escape") setNav(false);
+        if (event.key === "Tab" && document.body.classList.contains("nav-open")) {
+          const focusable = [...document.querySelectorAll(".sidebar a, .sidebar button:not([disabled])")];
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last?.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first?.focus();
+          }
+        }
+        const target = event.target;
+        const typing = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target?.isContentEditable;
+        if (event.key === "/" && !typing) {
+          event.preventDefault();
+          document.querySelector("#q-global")?.focus();
+        }
+      });
+
+      const toc = document.querySelector("#page-toc");
+      const headings = [...document.querySelectorAll("#conteudo h2")].filter((heading) => !heading.closest(".card"));
+      const usedIds = new Set([...document.querySelectorAll("[id]")].map((element) => element.id));
+      const tocEntries = [];
+      headings.forEach((heading, index) => {
+        const section = heading.closest("section[id]");
+        const target = section || heading;
+        let id = target.id;
+        if (!id) {
+          id = heading.textContent
+            ?.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "") || `secao-${index + 1}`;
+          const baseId = id;
+          let suffix = 2;
+          while (usedIds.has(id)) id = `${baseId}-${suffix++}`;
+          usedIds.add(id);
+          target.id = id;
+        }
+        const link = document.createElement("a");
+        link.href = `#${id}`;
+        link.textContent = heading.textContent || `Seção ${index + 1}`;
+        toc?.append(link);
+        tocEntries.push({ target, id });
+      });
+      if (!headings.length) document.querySelector(".page-rail")?.classList.add("page-rail--empty");
+
+      if ("IntersectionObserver" in window && tocEntries.length) {
+        const links = [...document.querySelectorAll("#page-toc a")];
+        const observer = new IntersectionObserver((entries) => {
+          const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+          if (!visible) return;
+          links.forEach((link) => link.toggleAttribute("aria-current", link.getAttribute("href") === `#${visible.target.id}`));
+        }, { rootMargin: "-18% 0px -72% 0px" });
+        tocEntries.forEach(({ target }) => observer.observe(target));
+      }
+
+      const progress = document.querySelector(".reading-progress span");
+      const updateProgress = () => {
+        const scrollable = document.documentElement.scrollHeight - innerHeight;
+        const value = scrollable > 0 ? Math.min(1, Math.max(0, scrollY / scrollable)) : 0;
+        if (progress) progress.style.transform = `scaleX(${value})`;
+      };
+      addEventListener("scroll", updateProgress, { passive: true });
+      updateProgress();
+
+      if (isProduction && "serviceWorker" in navigator && location.protocol.startsWith("http")) {
+        addEventListener("load", () => navigator.serviceWorker.register(serviceWorkerPath).catch(() => {}));
+      }
+    })();</script></body></html>
