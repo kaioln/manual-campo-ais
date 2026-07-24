@@ -34,7 +34,7 @@ Versão: 0.2.0
 - Procedimentos e valores com fontes: atendido; itens sem fonte permanecem lacuna.
 - Busca, glossário, checksum, checklists, troubleshooting, casos e progresso local: atendido.
 - Credenciais e acesso indevido: ausentes.
-- Publicação externa: autorizada pelo usuário; deploy no GitHub Pages previsto após esta validação.
+- Publicação externa: concluída no GitHub Pages em 2026-07-24; build `e8d3e3e` verificado em produção.
 
 ## Limite de conclusão
 
